@@ -441,7 +441,7 @@
       ]
     },
 
-    // 全6エンド回収後に解放される特別ストーリー（名前非表示＆専用甘いBGM）
+    // 全6エンド回収後に解放される特別ストーリー（名前非表示＆強制音声スイッチ）
     special_story: {
       isSpecial: true,
       lines: [
@@ -486,28 +486,27 @@
   bgmAudio.volume = 0.25;
   bgmSpecialAudio.volume = 0.25;
 
-  function getCurrentActiveBgm() {
-    const scene = scenario[currentSceneKey];
-    return scene.isSpecial ? bgmSpecialAudio : bgmAudio;
-  }
-
-  function switchBgmIfNeeded() {
-    const activeBgm = getCurrentActiveBgm();
-    const otherBgm = activeBgm === bgmAudio ? bgmSpecialAudio : bgmAudio;
-
-    if (!otherBgm.paused) {
-      otherBgm.pause();
-      otherBgm.currentTime = 0;
-    }
-
-    if (bgmStarted || scenario[currentSceneKey].isSpecial) {
-      activeBgm.play().catch(() => {});
+  // BGMの切り替えと強制再生
+  function applyBgm() {
+    const isSpecial = scenario[currentSceneKey].isSpecial;
+    
+    if (isSpecial) {
+      bgmAudio.pause();
+      bgmAudio.currentTime = 0;
+      bgmSpecialAudio.play().catch(() => {});
+    } else {
+      bgmSpecialAudio.pause();
+      bgmSpecialAudio.currentTime = 0;
+      if (bgmStarted) {
+        bgmAudio.play().catch(() => {});
+      }
     }
   }
 
   bgmToggleBtn.onclick = (e) => {
     e.stopPropagation();
-    const activeBgm = getCurrentActiveBgm();
+    const isSpecial = scenario[currentSceneKey].isSpecial;
+    const activeBgm = isSpecial ? bgmSpecialAudio : bgmAudio;
     if (activeBgm.paused) {
       activeBgm.play().catch(() => {});
       bgmToggleBtn.innerText = "🎵 ON";
@@ -522,7 +521,7 @@
   }
 
   function render() {
-    switchBgmIfNeeded();
+    applyBgm();
 
     const scene = scenario[currentSceneKey];
     const currentLine = scene.lines[currentLineIndex];
@@ -588,7 +587,12 @@
           specialBtn.innerText = "✨ 解放された特別ストーリーを読む";
           specialBtn.onclick = (e) => {
             e.stopPropagation();
+            // ユーザーのタップアクション直下で音声を確実に発動させる
             bgmStarted = true;
+            bgmAudio.pause();
+            bgmSpecialAudio.currentTime = 0;
+            bgmSpecialAudio.play().catch(() => {});
+            
             currentSceneKey = "special_story";
             currentLineIndex = 0;
             render();
@@ -620,7 +624,8 @@
     if (!bgmStarted) {
       bgmStarted = true;
     }
-    const activeBgm = getCurrentActiveBgm();
+    const isSpecial = scenario[currentSceneKey].isSpecial;
+    const activeBgm = isSpecial ? bgmSpecialAudio : bgmAudio;
     if (activeBgm.paused) {
       activeBgm.play().catch(() => {});
     }
