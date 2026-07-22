@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>乙女ノベルゲーム</title>
+  <title>テスト</title>
   <style>
     * {
       box-sizing: border-box;
@@ -40,7 +40,7 @@
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
     }
 
-    /* 1. キャラクター表示エリア */
+    /* キャラクター表示エリア */
     .character-area {
       position: absolute;
       top: 0;
@@ -65,7 +65,7 @@
       transition: opacity 0.2s ease-in-out;
     }
 
-    /* 2. セリフ表示エリア（260px固定・スクロールなし） */
+    /* セリフ表示エリア（260px固定） */
     .message-window {
       position: absolute;
       bottom: 0;
@@ -89,13 +89,32 @@
       flex-direction: column;
     }
 
-    /* 名前表示 */
+    /* 名前・エンド表示ヘッダー */
+    .header-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
     .speaker-name {
       font-size: 0.88rem;
       color: #f48fb1;
       font-weight: bold;
       letter-spacing: 1px;
-      margin-bottom: 4px;
+    }
+
+    /* エンド名バッジ */
+    .end-badge {
+      font-size: 0.75rem;
+      color: #ffd54f;
+      background: rgba(255, 213, 79, 0.15);
+      border: 1px solid rgba(255, 213, 79, 0.5);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      display: none;
     }
 
     /* セリフ文章 */
@@ -159,7 +178,10 @@
   <!-- セリフ枠 -->
   <div class="message-window" id="message-window">
     <div class="dialogue-content">
-      <div class="speaker-name" id="speaker">名前</div>
+      <div class="header-box">
+        <div class="speaker-name" id="speaker">名前</div>
+        <div class="end-badge" id="end-badge">END</div>
+      </div>
       <div class="text-box" id="story-text">読み込み中...</div>
     </div>
     <div class="choices-container" id="choices"></div>
@@ -169,24 +191,23 @@
 </div>
 
 <script>
-  // ★セリフボリュームを大幅に増量したシナリオ構造★
   const scenario = {
     start: {
       lines: [
-        { speaker: "エレナ", image: "character.png", text: "「ふぅ……ようやく静かになったわね。夜風が気持ちいいわ。」" },
+        { speaker: "（地の文）", image: "character.png", text: "仕事終わりの夜。エレナに誘われて、都会の喧騒を見下ろす特別なラウンジへやってきた。" },
+        { speaker: "エレナ", image: "character.png", text: "「ふぅ……ようやく静かになったわね。夜風がとても気持ちいいわ。」" },
         { speaker: "エレナ", image: "character.png", text: "「あら、ふふ……お待たせ。そんなにじっと見つめられたら照れてしまうわ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「でも……今日のあなた、なんだか雰囲気が違ってすごく素敵ね。」" },
         { speaker: "エレナ", image: "smile.png", text: "「二人きりで夜景を眺めるなんて、なんだかロマンチックだと思わない？」" },
         { speaker: "エレナ", image: "character.png", text: "「ねえ……今日の私、あなたの目にはどう映っているかしら？」" }
       ],
       choices: [
-        { text: "「すごく美しくて見惚れていました」と正直に伝える", next: "beauty" },
+        { text: "「すごく美しくて見惚れていました」と伝えてみる", next: "beauty" },
         { text: "「かっこよくてドキドキします」と照れる", next: "cool" },
         { text: "「エレナさんこそ、いつも魅力的です」と微笑む", next: "smile_route" }
       ]
     },
 
-    // --- ルート1: 美しくて見惚れた ---
     beauty: {
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「見惚れてくれたの？……ふふっ、ありがとう。最高の褒め言葉ね！」" },
@@ -200,25 +221,26 @@
       ]
     },
     beauty_deep: {
+      endTitle: "END 01 / Sweet Night",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「朝まで……？ ふふ、そんな大胆なお誘い、断る理由がないわ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「今夜は絶対に逃がしてあげないから……覚悟しておいてね？」" }
       ],
       choices: [
-        { text: "最初に戻る", next: "start" }
+        { text: "最初からやり直す（全6種類）", next: "start" }
       ]
     },
     beauty_sweet: {
+      endTitle: "END 02 / Eternal Promise",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「気が済むまで、ね。それなら……一生離れられなくなっちゃうかもしれないわよ？」" },
         { speaker: "エレナ", image: "character.png", text: "「ふふっ、冗談じゃないわ。本気よ？」" }
       ],
       choices: [
-        { text: "最初に戻る", next: "start" }
+        { text: "最初からやり直す（全6種類）", next: "start" }
       ]
     },
 
-    // --- ルート2: かっこよくてドキドキ ---
     cool: {
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「ドキドキさせてしまったかしら？……ふふ、そんな顔も本当にかわいいわ。」" },
@@ -232,25 +254,26 @@
       ]
     },
     cool_secret: {
+      endTitle: "END 03 / Secret Time",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「ふふ、欲張りさんね。私の秘密は一筋縄じゃ解き明かせないわよ？」" },
         { speaker: "エレナ", image: "smile.png", text: "「これから時間をかけて、ゆっくり……ひとつずつ教えてあげるわ。」" }
       ],
       choices: [
-        { text: "最初に戻る", next: "start" }
+        { text: "最初からやり直す（全6種類）", next: "start" }
       ]
     },
     cool_cute: {
+      endTitle: "END 04 / Special Smile",
       lines: [
         { speaker: "エレナ", image: "character.png", text: "「可愛い、だなんて……普段なら聞き流すけれど、あなたに言われると照れるわね。」" },
         { speaker: "エレナ", image: "smile.png", text: "「……特別に、あなたにだけは見せてあげてもいいかしら。」" }
       ],
       choices: [
-        { text: "最初に戻る", next: "start" }
+        { text: "最初からやり直す（全6種類）", next: "start" }
       ]
     },
 
-    // --- ルート3: いつも魅力的 ---
     smile_route: {
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「まあ、上手な返しね！ でも……あなたの言葉だから特別に嬉しいわ。」" },
@@ -264,21 +287,23 @@
       ]
     },
     smile_only: {
+      endTitle: "END 05 / Only You",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「……！ 真顔でそんなこと言うなんて、ズルいわ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「嬉しくて、胸がいっぱいになっちゃったじゃない。……本当、大好きよ。」" }
       ],
       choices: [
-        { text: "最初に戻る", next: "start" }
+        { text: "最初からやり直す（全6種類）", next: "start" }
       ]
     },
     smile_jealous: {
+      endTitle: "END 06 / Dangerous Love",
       lines: [
-        { speaker: "エレナ", image: "smile.png", text: "「あら、私の嫉妬を楽しむなんて、意外と悪悪ね？」" },
+        { speaker: "エレナ", image: "smile.png", text: "「あら、私の嫉妬を楽しむなんて、意外と意悪ね？」" },
         { speaker: "エレナ", image: "smile.png", text: "「そんな悪い子には……もっと特別な『おしおき』が必要かしらね、ふふっ。」" }
       ],
       choices: [
-        { text: "最初に戻る", next: "start" }
+        { text: "最初からやり直す（全6種類）", next: "start" }
       ]
     }
   };
@@ -288,6 +313,7 @@
 
   const charImgEl = document.getElementById("char-img");
   const speakerEl = document.getElementById("speaker");
+  const endBadgeEl = document.getElementById("end-badge");
   const storyTextEl = document.getElementById("story-text");
   const choicesContainer = document.getElementById("choices");
   const arrowEl = document.getElementById("arrow");
@@ -297,13 +323,19 @@
     const scene = scenario[currentSceneKey];
     const currentLine = scene.lines[currentLineIndex];
 
-    // 画像の切り替え
     if (charImgEl.getAttribute("src") !== currentLine.image) {
       charImgEl.src = currentLine.image;
     }
 
     speakerEl.innerText = currentLine.speaker;
     storyTextEl.innerText = currentLine.text;
+
+    if (scene.endTitle) {
+      endBadgeEl.innerText = scene.endTitle;
+      endBadgeEl.style.display = "inline-block";
+    } else {
+      endBadgeEl.style.display = "none";
+    }
 
     const isLastLine = currentLineIndex === scene.lines.length - 1;
 
@@ -331,7 +363,6 @@
     }
   }
 
-  // 枠全体タップで次のセリフへ
   windowEl.onclick = () => {
     const scene = scenario[currentSceneKey];
     const isLastLine = currentLineIndex === scene.lines.length - 1;
