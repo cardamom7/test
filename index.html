@@ -147,7 +147,7 @@
 
     /* セリフ文章 */
     .text-box {
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       line-height: 1.45;
       color: #ffffff;
       min-height: 38px;
@@ -170,17 +170,17 @@
     .choices-container {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
 
     .choice-btn {
       background: rgba(255, 255, 255, 0.12);
       color: #ffffff;
       border: 1px solid rgba(244, 143, 177, 0.35);
-      padding: 8px 10px;
+      padding: 7px 10px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       line-height: 1.3;
       text-align: left;
       transition: all 0.2s ease;
@@ -191,17 +191,29 @@
       border-color: #f48fb1;
     }
 
+    /* 特別ストーリー用ボタンの強調 */
+    .special-choice-btn {
+      background: rgba(255, 213, 79, 0.22);
+      color: #ffd54f;
+      border: 1px solid rgba(255, 213, 79, 0.7);
+      font-weight: bold;
+    }
+    .special-choice-btn:hover {
+      background: rgba(255, 213, 79, 0.38);
+      border-color: #ffd54f;
+    }
+
     /* エンド回収リスト（エンディング時表示） */
     .end-list-box {
       background: rgba(0, 0, 0, 0.45);
       border: 1px dashed rgba(255, 213, 79, 0.4);
       border-radius: 6px;
-      padding: 6px 8px;
-      font-size: 0.68rem;
+      padding: 4px 8px;
+      font-size: 0.63rem;
       color: #bbb;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 3px 6px;
+      gap: 2px 6px;
     }
 
     .end-item {
@@ -251,12 +263,12 @@
 <script>
   // 全6種のエンド定義
   const allEnds = [
-    { key: "beauty_deep", title: "END 01 / Sweet Night" },
-    { key: "beauty_sweet", title: "END 02 / Eternal Promise" },
-    { key: "cool_secret", title: "END 03 / Secret Time" },
-    { key: "cool_cute", title: "END 04 / Special Smile" },
-    { key: "smile_only", title: "END 05 / Only You" },
-    { key: "smile_jealous", title: "END 06 / Dangerous Love" }
+    { key: "beauty_deep", title: "END 01: 甘い夜" },
+    { key: "beauty_sweet", title: "END 02: 永遠の誓い" },
+    { key: "cool_secret", title: "END 03: 秘密の時間" },
+    { key: "cool_cute", title: "END 04: 特別な笑顔" },
+    { key: "smile_only", title: "END 05: あなただけ" },
+    { key: "smile_jealous", title: "END 06: 危険な恋" }
   ];
 
   const scenario = {
@@ -264,8 +276,10 @@
       lines: [
         { speaker: "", image: "character.png", text: "仕事終わりの夜。エレナに誘われて、都会の喧騒を見下ろす特別なラウンジへやってきた。" },
         { speaker: "エレナ", image: "character.png", text: "「ふぅ……ようやく静かになったわね。夜風がとても気持ちいいわ。」" },
+        { speaker: "", image: "character.png", text: "グラスを傾けながら、彼女は静かに窓の外の夜景を見つめている。" },
         { speaker: "エレナ", image: "character.png", text: "「あら、ふふ……お待たせ。そんなにじっと見つめられたら照れてしまうわ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「でも……今日のあなた、なんだか雰囲気が違ってすごく素敵ね。」" },
+        { speaker: "", image: "smile.png", text: "彼女の瞳が揺らめき、甘い香りがふわりと鼻腔をくすぐる。" },
         { speaker: "エレナ", image: "smile.png", text: "「二人きりで夜景を眺めるなんて、なんだかロマンチックだと思わない？」" },
         { speaker: "エレナ", image: "character.png", text: "「ねえ……今日の私、あなたの目にはどう映っているかしら？」" }
       ],
@@ -279,7 +293,8 @@
     beauty: {
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「見惚れてくれたの？……ふふっ、ありがとう。最高の褒め言葉ね！」" },
-        { speaker: "エレナ", image: "character.png", text: "「そんな真っ直ぐな瞳でおねだりされたら、大人の余裕なんて吹き飛んでしまいそうだわ。」" },
+        { speaker: "", image: "smile.png", text: "嬉しそうに頬を染めながら、エレナは少しだけ距離を縮めてきた。" },
+        { speaker: "エレナ", image: "character.png", text: "「そんな真っ直ぐな瞳でおねだりされたら、大人の余裕なんて吹き飛ばしてしまいそうだわ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「私ね、あなたのそういう素直で一生懸命なところ……すごく好きよ。」" },
         { speaker: "エレナ", image: "character.png", text: "「ねえ……今夜は、もう少しだけ私に付き合ってくれるかしら？」" }
       ],
@@ -289,9 +304,10 @@
       ]
     },
     beauty_deep: {
-      endTitle: "END 01 / Sweet Night",
+      endTitle: "END 01: 甘い夜",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「朝まで……？ ふふ、そんな大胆なお誘い、断る理由がないわ。」" },
+        { speaker: "", image: "smile.png", text: "交わした視線が熱を帯び、ふたりの距離が完全に溶け合っていく。" },
         { speaker: "エレナ", image: "smile.png", text: "「今夜は絶対に逃がしてあげないから……覚悟しておいてね？」" }
       ],
       choices: [
@@ -299,9 +315,10 @@
       ]
     },
     beauty_sweet: {
-      endTitle: "END 02 / Eternal Promise",
+      endTitle: "END 02: 永遠の誓い",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「気が済むまで、ね。それなら……一生離れられなくなっちゃうかもしれないわよ？」" },
+        { speaker: "", image: "smile.png", text: "彼女の指先がそっと自分の手に重なり、心地よい緊張感が走る。" },
         { speaker: "エレナ", image: "character.png", text: "「ふふっ、冗談じゃないわ。本気よ？」" }
       ],
       choices: [
@@ -312,6 +329,7 @@
     cool: {
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「ドキドキさせてしまったかしら？……ふふ、そんな顔も本当にかわいいわ。」" },
+        { speaker: "", image: "smile.png", text: "からかうような、それでいて愛おしそうな優しい笑みを向けてくる。" },
         { speaker: "エレナ", image: "character.png", text: "「でもね、本当は……私の方こそ、あなたといると胸が高鳴っているの。」" },
         { speaker: "エレナ", image: "character.png", text: "「かっこいい自分でいようと思っても、あなたの前だと素が出てしまいそうになるのよ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「内緒よ？ 他の誰にも見せたことのない、私の特別な一面なんだから。」" }
@@ -322,9 +340,10 @@
       ]
     },
     cool_secret: {
-      endTitle: "END 03 / Secret Time",
+      endTitle: "END 03: 秘密の時間",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「ふふ、欲張りさんね。私の秘密は一筋縄じゃ解き明かせないわよ？」" },
+        { speaker: "", image: "smile.png", text: "妖しく微笑みながら、彼女は耳元へと顔を近づけてきた。" },
         { speaker: "エレナ", image: "smile.png", text: "「これから時間をかけて、ゆっくり……ひとつずつ教えてあげるわ。」" }
       ],
       choices: [
@@ -332,9 +351,10 @@
       ]
     },
     cool_cute: {
-      endTitle: "END 04 / Special Smile",
+      endTitle: "END 04: 特別な笑顔",
       lines: [
         { speaker: "エレナ", image: "character.png", text: "「可愛い、だなんて……普段なら聞き流すけれど、あなたに言われると照れるわね。」" },
+        { speaker: "", image: "smile.png", text: "少し頬を赤らめた彼女は、恥ずかしそうに目を伏せた。" },
         { speaker: "エレナ", image: "smile.png", text: "「……特別に、あなたにだけは見せてあげてもいいかしら。」" }
       ],
       choices: [
@@ -345,6 +365,7 @@
     smile_route: {
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「まあ、上手な返しね！ でも……あなたの言葉だから特別に嬉しいわ。」" },
+        { speaker: "", image: "smile.png", text: "心から嬉しそうな笑顔を浮かべ、彼女はグラスをそっと置いた。" },
         { speaker: "エレナ", image: "character.png", text: "「誰にでもそんな素敵なことを言っているわけじゃないわよね？」" },
         { speaker: "エレナ", image: "character.png", text: "「もし他の人にも言っているなら、ちょっと嫉妬してしまうかもしれないわ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「ふふ、冗談よ。さあ、二人だけの特別な時間を楽しむとしましょうか。」" }
@@ -355,9 +376,10 @@
       ]
     },
     smile_only: {
-      endTitle: "END 05 / Only You",
+      endTitle: "END 05: あなただけ",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「……！ 真顔でそんなこと言うなんて、ズルいわ。」" },
+        { speaker: "", image: "smile.png", text: "胸を突かれたように目を見開いたあと、彼女は愛おしそうに微笑んだ。" },
         { speaker: "エレナ", image: "smile.png", text: "「嬉しくて、胸がいっぱいになっちゃったじゃない。……本当、大好きよ。」" }
       ],
       choices: [
@@ -365,13 +387,30 @@
       ]
     },
     smile_jealous: {
-      endTitle: "END 06 / Dangerous Love",
+      endTitle: "END 06: 危険な恋",
       lines: [
         { speaker: "エレナ", image: "smile.png", text: "「あら、私の嫉妬を楽しむなんて、意外と意悪ね？」" },
+        { speaker: "", image: "smile.png", text: "妖しくも色気のある笑みを浮かべ、彼女の瞳に熱い光が宿る。" },
         { speaker: "エレナ", image: "smile.png", text: "「そんな悪い子には……もっと特別な『おしおき』が必要かしらね、ふふっ。」" }
       ],
       choices: [
         { text: "最初からやり直して他のエンドを探す", next: "start" }
+      ]
+    },
+
+    // 6エンド全回収後に解放される特別ストーリー（専用イラスト `special.png` を指定）
+    special_story: {
+      lines: [
+        { speaker: "", image: "special.png", text: "すべてのエンディングを巡り、数え切れないほどの言葉を交わしたふたり。" },
+        { speaker: "", image: "special.png", text: "静寂に包まれたラウンジの空気は、最初の夜よりもずっと甘く、穏やかに満ちていた。" },
+        { speaker: "エレナ", image: "special.png", text: "「まさか、すべての思い出を私と共有してくれるなんて……本当にありがとう。」" },
+        { speaker: "", image: "special.png", text: "彼女は愛おしそうに満面の笑みを浮かべ、そっと温かい手を重ねてくる。" },
+        { speaker: "エレナ", image: "special.png", text: "「どんな結末を迎えたとしても、私の隣にいてくれるのはいつだってあなただったわ。」" },
+        { speaker: "エレナ", image: "special.png", text: "「これからはもう迷わせない。……ねえ、これからの未来も、ずっと私だけを見てくれるわよね？」" },
+        { speaker: "", image: "special.png", text: "繋いだ手の温もりが、永遠の誓いのように優しく胸に響いていく――" }
+      ],
+      choices: [
+        { text: "タイトルに戻る", next: "start" }
       ]
     }
   };
@@ -380,7 +419,6 @@
   let currentLineIndex = 0;
   let bgmStarted = false;
 
-  // クリア（回収）データ管理
   let clearedEnds = JSON.parse(localStorage.getItem("otome_cleared_ends") || "[]");
 
   const charImgEl = document.getElementById("char-img");
@@ -419,7 +457,6 @@
       charImgEl.src = currentLine.image;
     }
 
-    // 地の文（名前が空の場合）は名前欄を隠す
     if (currentLine.speaker) {
       speakerEl.innerText = currentLine.speaker;
       speakerEl.style.display = "block";
@@ -430,12 +467,10 @@
 
     storyTextEl.innerText = currentLine.text;
 
-    // ★エンド到達時の処理★
     if (scene.endTitle) {
       endBadgeEl.innerText = scene.endTitle;
       endBadgeEl.style.display = "inline-block";
 
-      // 未回収なら保存
       if (!clearedEnds.includes(currentSceneKey)) {
         clearedEnds.push(currentSceneKey);
         localStorage.setItem("otome_cleared_ends", JSON.stringify(clearedEnds));
@@ -453,7 +488,6 @@
       choicesContainer.style.display = "flex";
       choicesContainer.innerHTML = "";
 
-      // ★エンド到達時：回収図鑑リストを表示★
       if (scene.endTitle) {
         const listContainer = document.createElement("div");
         listContainer.className = "end-list-box";
@@ -462,11 +496,25 @@
           const isCleared = clearedEnds.includes(end.key);
           const item = document.createElement("div");
           item.className = `end-item ${isCleared ? 'cleared' : ''}`;
-          item.innerText = isCleared ? `★ ${end.title}` : `🔒 END 0${end.title.slice(4, 5)} 未回収`;
+          item.innerText = isCleared ? `★ ${end.title}` : `🔒 ${end.title.slice(0, 6)}未`;
           listContainer.appendChild(item);
         });
 
         choicesContainer.appendChild(listContainer);
+
+        // 全6エンド回収済みなら特別ストーリーへのボタンを自動で追加
+        if (clearedEnds.length === allEnds.length) {
+          const specialBtn = document.createElement("button");
+          specialBtn.className = "choice-btn special-choice-btn";
+          specialBtn.innerText = "✨ 解放された特別ストーリーを読む";
+          specialBtn.onclick = (e) => {
+            e.stopPropagation();
+            currentSceneKey = "special_story";
+            currentLineIndex = 0;
+            render();
+          };
+          choicesContainer.appendChild(specialBtn);
+        }
       }
 
       scene.choices.forEach(choice => {
