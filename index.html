@@ -12,8 +12,8 @@
     }
     body {
       font-family: "Hiragino Sans", "Meiryo", sans-serif;
-      background-color: #0f0f14;
-      color: #fff;
+      background-color: #1a1a24;
+      color: #333;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -21,90 +21,98 @@
       padding: 10px;
     }
 
-    /* スマホ縦持ちサイズのフレーム */
+    /* スマホ画面フレーム（縦持ちサイズ） */
     .phone-screen {
       width: 100%;
       max-width: 390px;
-      height: 800px;
+      height: 780px;
       max-height: 92vh;
-      background: linear-gradient(180deg, #2b1f31 0%, #120e17 100%);
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      /* ↓ 背景の色やグラデーションはここでお好きな色に変えられます */
+      background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 100%);
+      border-radius: 20px;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
-    /* 上部：シンプルで洗練されたステータスバー */
-    .header-bar {
-      padding: 16px 20px;
-      background: rgba(0, 0, 0, 0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 10;
-    }
-    .game-title {
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-      color: #dda0dd;
-      text-transform: uppercase;
-    }
-    .love-meter {
-      font-size: 0.85rem;
-      color: #ffb6c1;
-      letter-spacing: 1px;
-    }
-
-    /* 中央：キャラクター表示エリア（画面のメイン） */
+    /* 1. キャラクター表示エリア（画面全体に大きく配置） */
     .character-area {
-      flex: 1;
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
-      flex-direction: column;
       justify-content: center;
-      align-items: center;
+      align-items: flex-end; /* キャラクターを下に寄せてバストアップ表示 */
+      padding-bottom: 120px; /* セリフ枠と自然に被る位置に調整 */
+      z-index: 1;
     }
 
-    /* キャラクター（立ち絵の代わり） */
+    /* キャラクターのサイズ感（ドアップ表示） */
+    .character-image {
+      /* イラスト画像を使う場合はこちらを有効化 */
+      max-width: 120%;
+      height: 75%;
+      object-fit: contain;
+    }
+
     .character-avatar {
-      font-size: 90px;
-      filter: drop-shadow(0 0 20px rgba(255, 182, 193, 0.3));
-      transition: transform 0.3s ease;
+      /* アイコン・絵文字テスト用の超巨大表示 */
+      font-size: 160px;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+      transition: transform 0.2s ease;
     }
 
-    /* 下部：キャラの後ろが透けるすりガラス風UI */
-    .ui-bottom-area {
+    /* 2. セリフ表示エリア（画面下に被さる半透明枠） */
+    .message-window {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      padding: 20px 18px;
-      /* 背景をうっすら透けさせる設定 */
-      background: rgba(18, 14, 23, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      min-height: 180px;
+      /* ↓ セリフ枠の背景色・透け感（黒系でもピンク系でも変更自由） */
+      background: rgba(20, 20, 30, 0.75); 
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 18px 20px 24px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      z-index: 20;
+      justify-content: space-between;
+      z-index: 10; /* キャラクターの上に重ねる */
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
 
+    /* 名前表示 */
     .speaker-name {
       font-size: 0.95rem;
+      color: #ff80ab; /* 名前の文字色 */
       font-weight: bold;
-      color: #ffc0cb;
       letter-spacing: 1px;
+      margin-bottom: 6px;
     }
 
+    /* セリフ文章 */
     .text-box {
-      font-size: 0.95rem;
+      font-size: 1rem;
       line-height: 1.6;
-      color: #f0f0f0;
-      min-height: 55px;
+      color: #ffffff; /* セリフの文字色 */
+      min-height: 50px;
+    }
+
+    /* 右下の送りマーク（∨） */
+    .next-arrow {
+      align-self: flex-end;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
     }
 
     /* 選択肢ボタン */
@@ -112,96 +120,77 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      margin-top: 10px;
     }
+
     .choice-btn {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.15);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 12px 16px;
-      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 11px 15px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       text-align: left;
       transition: all 0.2s ease;
     }
+
     .choice-btn:hover {
-      background: rgba(255, 182, 193, 0.25);
-      border-color: #ffb6c1;
-      padding-left: 20px;
+      background: rgba(255, 128, 171, 0.4);
+      border-color: #ff80ab;
     }
   </style>
 </head>
 <body>
 
 <div class="phone-screen">
-  <!-- ヘッダー -->
-  <div class="header-bar">
-    <span class="game-title">Love Story</span>
-    <span class="love-meter" id="love-meter">好感度: ♥♡♡♡♡</span>
-  </div>
 
-  <!-- キャラクター表示エリア（背景） -->
+  <!-- キャラクター表示（後ろに重なる） -->
   <div class="character-area">
     <div class="character-avatar" id="avatar">🤵‍♂️</div>
   </div>
 
-  <!-- 下部の透けるメッセージ＆選択肢 -->
-  <div class="ui-bottom-area">
-    <div class="speaker-name" id="speaker">イケメン</div>
-    <div class="text-box" id="story-text">読み込み中...</div>
+  <!-- セリフ表示（手前に重なる） -->
+  <div class="message-window">
+    <div>
+      <div class="speaker-name" id="speaker">キャラ名</div>
+      <div class="text-box" id="story-text">読み込み中...</div>
+    </div>
+    <div class="next-arrow" id="arrow">∨</div>
     <div class="choices-container" id="choices"></div>
   </div>
+
 </div>
 
 <script>
-  let lovePoints = 1;
-
-  // テスト用シナリオ（ここを自由に書き換えてゲームを作ります！）
+  // シナリオデータの構造
   const scenario = {
     start: {
-      speaker: "皇 凛太郎（すめらぎ りんたろう）",
+      speaker: "神代 蓮",
       avatar: "🤵‍♂️",
-      text: "「待たせてごめん。……ふふ、そんなに見つめられると照れるな。」",
+      text: "「こうして近くで君の顔を見ていると……なんだか不思議な気分になるよ。」",
       choices: [
-        { text: "「全然待ってないよ」と微笑む", next: "smile", love: 1 },
-        { text: "「遅刻したからジュースおごって」", next: "juice", love: 0 },
-        { text: "黙って鼻毛カッターを差し出す", next: "surreal", love: -1 }
+        { text: "「私もだよ」と見つめ返す", next: "look" },
+        { text: "「顔が近すぎるよ！」と照れる", next: "shy" }
       ]
     },
-    smile: {
-      speaker: "皇 凛太郎",
+    look: {
+      speaker: "神代 蓮",
       avatar: "🥰",
-      text: "「君はいつも優しいね。……よし、今日は君の行きたい場所へ行こう。」",
+      text: "「ふふ、そんなに真っ直ぐ見つめられたら、僕の方がドキドキしちゃうな。」",
       choices: [
-        { text: "最初からやり直す", next: "start", reset: true }
+        { text: "最初に戻る", next: "start" }
       ]
     },
-    juice: {
-      speaker: "皇 凛太郎",
+    shy: {
+      speaker: "神代 蓮",
       avatar: "😊",
-      text: "「あはは、現金だなあ。いいよ、あそこの自動販売機で好きなのを選んで？」",
+      text: "「ごめんごめん、あまりに君が可愛いから、つい引き寄せられちゃって。」",
       choices: [
-        { text: "最初からやり直す", next: "start", reset: true }
-      ]
-    },
-    surreal: {
-      speaker: "皇 凛太郎",
-      avatar: "😳",
-      text: "「えっ……？出てる……！？僕、鼻毛出てた……！？（激しいショックを受けた）」",
-      choices: [
-        { text: "最初からやり直す", next: "start", reset: true }
+        { text: "最初に戻る", next: "start" }
       ]
     }
   };
-
-  function updateLoveMeter() {
-    let hearts = "";
-    const count = Math.max(0, Math.min(5, lovePoints));
-    for (let i = 0; i < 5; i++) {
-      hearts += i < count ? "♥" : "♡";
-    }
-    document.getElementById("love-meter").innerText = `好感度: ${hearts}`;
-  }
 
   function showScene(sceneKey) {
     const scene = scenario[sceneKey];
@@ -210,26 +199,23 @@
     document.getElementById("avatar").innerText = scene.avatar || "🤵‍♂️";
 
     const choicesContainer = document.getElementById("choices");
+    const arrow = document.getElementById("arrow");
     choicesContainer.innerHTML = "";
 
-    scene.choices.forEach(choice => {
-      const button = document.createElement("button");
-      button.className = "choice-btn";
-      button.innerText = choice.text;
-      button.onclick = () => {
-        if (choice.reset) {
-          lovePoints = 1;
-        } else if (choice.love !== undefined) {
-          lovePoints += choice.love;
-        }
-        updateLoveMeter();
-        showScene(choice.next);
-      };
-      choicesContainer.appendChild(button);
-    });
+    if (scene.choices && scene.choices.length > 0) {
+      arrow.style.display = "none";
+      scene.choices.forEach(choice => {
+        const button = document.createElement("button");
+        button.className = "choice-btn";
+        button.innerText = choice.text;
+        button.onclick = () => showScene(choice.next);
+        choicesContainer.appendChild(button);
+      });
+    } else {
+      arrow.style.display = "block";
+    }
   }
 
-  updateLoveMeter();
   showScene("start");
 </script>
 
