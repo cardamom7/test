@@ -231,9 +231,12 @@
 
 <div class="phone-screen">
 
-  <!-- BGM -->
+  <!-- BGM（通常用 & 特別ストーリー用） -->
   <audio id="bgm" loop preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="bgm-special" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3" type="audio/mpeg">
   </audio>
 
   <!-- キャラクター画像 -->
@@ -398,16 +401,17 @@
       ]
     },
 
-    // 6エンド全回収後に解放される特別ストーリー（専用イラスト `special.png` を指定）
+    // 6エンド全回収後に解放される特別ストーリー（専用イラスト `special.png`）
     special_story: {
+      isSpecial: true,
       lines: [
         { speaker: "", image: "special.png", text: "すべてのエンディングを巡り、数え切れないほどの言葉を交わしたふたり。" },
         { speaker: "", image: "special.png", text: "静寂に包まれたラウンジの空気は、最初の夜よりもずっと甘く、穏やかに満ちていた。" },
         { speaker: "エレナ", image: "special.png", text: "「まさか、すべての思い出を私と共有してくれるなんて……本当にありがとう。」" },
-        { speaker: "", image: "special.png", text: "彼女は愛おしそうに満面の笑みを浮かべ、そっと温かい手を重ねてくる。" },
+        { speaker: "", image: "special.png", text: "彼女は顔を赤らめ、ドキドキと高鳴る鼓動を隠すようにそっと視線を逸らしたあと、まっすぐに見つめてくる。" },
         { speaker: "エレナ", image: "special.png", text: "「どんな結末を迎えたとしても、私の隣にいてくれるのはいつだってあなただったわ。」" },
         { speaker: "エレナ", image: "special.png", text: "「これからはもう迷わせない。……ねえ、これからの未来も、ずっと私だけを見てくれるわよね？」" },
-        { speaker: "", image: "special.png", text: "繋いだ手の温もりが、永遠の誓いのように優しく胸に響いていく――" }
+        { speaker: "", image: "special.png", text: "熱を帯びた瞳で見つめられ、胸の奥が締め付けられるような甘い余韻に包まれていく――" }
       ],
       choices: [
         { text: "タイトルに戻る", next: "start" }
@@ -429,18 +433,41 @@
   const choicesContainer = document.getElementById("choices");
   const arrowEl = document.getElementById("arrow");
   const windowEl = document.getElementById("message-window");
+  
   const bgmAudio = document.getElementById("bgm");
+  const bgmSpecialAudio = document.getElementById("bgm-special");
   const bgmToggleBtn = document.getElementById("bgm-toggle");
 
   bgmAudio.volume = 0.25;
+  bgmSpecialAudio.volume = 0.25;
+
+  function getCurrentActiveBgm() {
+    const scene = scenario[currentSceneKey];
+    return scene.isSpecial ? bgmSpecialAudio : bgmAudio;
+  }
+
+  function switchBgmIfNeeded() {
+    const activeBgm = getCurrentActiveBgm();
+    const otherBgm = activeBgm === bgmAudio ? bgmSpecialAudio : bgmAudio;
+
+    if (!otherBgm.paused) {
+      otherBgm.pause();
+      otherBgm.currentTime = 0;
+    }
+
+    if (bgmStarted && activeBgm.paused) {
+      activeBgm.play().catch(() => {});
+    }
+  }
 
   bgmToggleBtn.onclick = (e) => {
     e.stopPropagation();
-    if (bgmAudio.paused) {
-      bgmAudio.play();
+    const activeBgm = getCurrentActiveBgm();
+    if (activeBgm.paused) {
+      activeBgm.play().catch(() => {});
       bgmToggleBtn.innerText = "🎵 ON";
     } else {
-      bgmAudio.pause();
+      activeBgm.pause();
       bgmToggleBtn.innerText = "🔇 OFF";
     }
   };
@@ -450,6 +477,8 @@
   }
 
   function render() {
+    switchBgmIfNeeded();
+
     const scene = scenario[currentSceneKey];
     const currentLine = scene.lines[currentLineIndex];
 
@@ -538,8 +567,9 @@
 
   windowEl.onclick = () => {
     if (!bgmStarted) {
-      bgmAudio.play().catch(() => {});
       bgmStarted = true;
+      const activeBgm = getCurrentActiveBgm();
+      activeBgm.play().catch(() => {});
     }
 
     const scene = scenario[currentSceneKey];
