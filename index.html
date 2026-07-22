@@ -85,7 +85,7 @@
       transition: opacity 0.3s ease;
     }
 
-    /* 特別ストーリー用：枠をさらに薄くし、もっと下へ配置するスタイル */
+    /* 特別ストーリー用：枠を薄く、一番下に配置し、不要なUIを完全非表示にするスタイル */
     .phone-screen.special-mode .message-window {
       background: transparent;
       backdrop-filter: none;
@@ -94,22 +94,29 @@
       pointer-events: auto;
       height: 100%;
       justify-content: flex-end;
-      padding: 20px 14px 14px 14px; /* 下部マージンを詰めてさらに下へ */
+      padding: 20px 14px 14px 14px;
     }
 
     .phone-screen.special-mode .dialogue-content {
-      background: rgba(10, 5, 15, 0.45); /* 背景の黒をかなり薄くしてイラストを見せる */
+      background: rgba(10, 5, 15, 0.45);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       border: 1px solid rgba(255, 213, 79, 0.25);
       border-radius: 10px;
       padding: 10px 12px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-      margin-bottom: 2px; /* 限界まで下に寄せる */
+      margin-bottom: 2px;
     }
 
     .phone-screen.special-mode .header-box {
       margin-bottom: 2px;
+    }
+
+    /* 特別ストーリー時は回収数・BGMボタン・ENDバッジを非表示 */
+    .phone-screen.special-mode .clear-count,
+    .phone-screen.special-mode .bgm-btn,
+    .phone-screen.special-mode .end-badge {
+      display: none !important;
     }
 
     .phone-screen.special-mode .text-box {
@@ -443,7 +450,7 @@
       ]
     },
 
-    // 全6エンド回収後に解放される特別ストーリー（分量をボリュームアップ！）
+    // 全6エンド回収後に解放される特別ストーリー（「これからもよろしくね」を追加）
     special_story: {
       isSpecial: true,
       lines: [
@@ -456,6 +463,7 @@
         { speaker: "エレナ", image: "special.png", text: "「どんな結末を迎えたとしても、私の隣にいてくれるのはいつだってあなただけだったわ。」" },
         { speaker: "エレナ", image: "special.png", text: "「もう他の誰にも渡さないし、どこにも行かせないから……覚悟してよね？」" },
         { speaker: "エレナ", image: "special.png", text: "「ねえ、これからの未来もずっと……私のことだけを、その瞳に映し続けてくれる？」" },
+        { speaker: "エレナ", image: "special.png", text: "「……なんて、少し恥ずかしいけど……こんな私だけど、これからもずっとよろしくね？」" },
         { speaker: "", image: "special.png", text: "熱を帯びた彼女の手がそっと重なり、ふたりの時間は永遠の甘い静寂へと溶けていった――" }
       ],
       choices: [
@@ -501,7 +509,7 @@
       otherBgm.currentTime = 0;
     }
 
-    if (bgmStarted && activeBgm.paused) {
+    if (bgmStarted) {
       activeBgm.play().catch(() => {});
     }
   }
@@ -619,7 +627,9 @@
   windowEl.onclick = () => {
     if (!bgmStarted) {
       bgmStarted = true;
-      const activeBgm = getCurrentActiveBgm();
+    }
+    const activeBgm = getCurrentActiveBgm();
+    if (activeBgm.paused) {
       activeBgm.play().catch(() => {});
     }
 
