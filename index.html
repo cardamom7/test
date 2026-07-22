@@ -3,59 +3,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>テストページ</title>
+  <title>シュールノベルゲーム</title>
   <style>
     body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px 20px;
-      background-color: #f0f4f8;
-      color: #333;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background-color: #1a1a24;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
     }
-    .card {
-      background: white;
-      padding: 30px;
+    .game-container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #2a2a38;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      max-width: 400px;
-      margin: 0 auto;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      border: 2px solid #4a4a60;
     }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
+    .speaker-tag {
+      font-weight: bold;
+      color: #ffcc00;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+    .text-box {
+      background-color: #161620;
+      padding: 18px;
+      border-radius: 8px;
+      min-height: 80px;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      border: 1px solid #3a3a4c;
+    }
+    .choices-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .choice-btn {
+      background-color: #3b3b54;
+      color: #ffffff;
+      border: 1px solid #5a5a78;
+      padding: 12px 16px;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: 20px;
+      font-size: 0.95rem;
+      text-align: left;
+      transition: all 0.2s;
     }
-    button:hover { background-color: #45a049; }
+    .choice-btn:hover {
+      background-color: #505072;
+      border-color: #ffcc00;
+    }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>✨ お試しテストページ ✨</h1>
-    <p>GitHub PagesでWebページを作るテストです！</p>
-    <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
-    <p id="result" style="font-size: 18px; font-weight: bold; min-height: 27px;">ボタンを押してみてね！</p>
-    <button onclick="drawOmikuji()">運勢を占う</button>
-  </div>
+<div class="game-container">
+  <div class="speaker-tag" id="speaker">???</div>
+  <div class="text-box" id="story-text">ゲームを読み込み中...</div>
+  <div class="choices-container" id="choices"></div>
+</div>
 
-  <script>
-    const fortunes = [
-      "🎉 大吉：今日は最高の1日になりそう！",
-      "🌟 吉：新しいことに挑戦するとラッキー！",
-      "😊 中吉：おいしいものを食べると運気アップ！",
-      "🍀 小吉：のんびり過ごすのが吉。"
-    ];
+<script>
+  // ゲームのデータ（シナリオ）
+  const scenario = {
+    start: {
+      speaker: "ナレーション",
+      text: "勇者よ、よくぞここまで辿り着いた。岩に突き刺さる「伝説のブロッコリー」が、静かにあなたを見つめている……。",
+      choices: [
+        { text: "両手で力任せに引き抜く", next: "pull" },
+        { text: "マヨネーズをかけてみる", next: "mayo" },
+        { text: "「おいしい？」と話しかける", next: "talk" }
+      ]
+    },
+    pull: {
+      speaker: "伝説のブロッコリー",
+      text: "「痛い痛い痛い！根っこ引っ張らないで！そこ関節！！」",
+      choices: [
+        { text: "ごめんと言って手を離す", next: "apologize" },
+        { text: "構わず引き抜く", next: "bad_end" }
+      ]
+    },
+    mayo: {
+      speaker: "伝説のブロッコリー",
+      text: "「あ〜〜〜ッ！！カロリー！！いまダイエット中なんですけど！！」",
+      choices: [
+        { text: "カロリーハーフを塗り直す", next: "diet" },
+        { text: "黙って完食する", next: "eat_end" }
+      ]
+    },
+    talk: {
+      speaker: "伝説のブロッコリー",
+      text: "「茹で加減によるね。ちなみに僕は固め推奨派。」",
+      choices: [
+        { text: "気が合いそうなので友達になる", next: "friend_end" },
+        { text: "塩を振る", next: "salt" }
+      ]
+    },
 
-    function drawOmikuji() {
-      const randomIndex = Math.floor(Math.random() * fortunes.length);
-      document.getElementById("result").innerText = fortunes[randomIndex];
+    // エンディング類
+    apologize: {
+      speaker: "ナレーション",
+      text: "お互いに気まずい空気が流れた。勇者は静かに旅を諦めた……。【気まずいEND】",
+      choices: [{ text: "最初からやり直す", next: "start" }]
+    },
+    bad_end: {
+      speaker: "ナレーション",
+      text: "ブロッコリーは怒りのあまりスーパーサイヤ人みたいに光り出し、世界は爆発した。【GAME OVER】",
+      choices: [{ text: "最初からやり直す", next: "start" }]
+    },
+    diet: {
+      speaker: "伝説のブロッコリー",
+      text: "「あ、配慮助かる。君、良い勇者だね。世界救うの伝言しとくわ。」【平和解決END】",
+      choices: [{ text: "最初からやり直す", next: "start" }]
+    },
+    eat_end: {
+      speaker: "ナレーション",
+      text: "ビタミンCが身体に満ち溢れた！勇者の肌がツヤツヤになった！【美肌END】",
+      choices: [{ text: "最初からやり直す", next: "start" }]
+    },
+    friend_end: {
+      speaker: "ナレーション",
+      text: "勇者とブロッコリーは最高の親友になり、一緒に居酒屋へ向かった。【HAPPY END】",
+      choices: [{ text: "最初からやり直す", next: "start" }]
+    },
+    salt: {
+      speaker: "伝説のブロッコリー",
+      text: "「塩分控えめでお願いします。」【健康志向END】",
+      choices: [{ text: "最初からやり直す", next: "start" }]
     }
-  </script>
+  };
+
+  // 画面を更新する処理
+  function showScene(sceneKey) {
+    const scene = scenario[sceneKey];
+    document.getElementById("speaker").innerText = scene.speaker;
+    document.getElementById("story-text").innerText = scene.text;
+
+    const choicesContainer = document.getElementById("choices");
+    choicesContainer.innerHTML = "";
+
+    scene.choices.forEach(choice => {
+      const button = document.createElement("button");
+      button.className = "choice-btn";
+      button.innerText = choice.text;
+      button.onclick = () => showScene(choice.next);
+      choicesContainer.appendChild(button);
+    });
+  }
+
+  // ゲーム開始
+  showScene("start");
+</script>
 
 </body>
 </html>
