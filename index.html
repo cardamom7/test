@@ -85,7 +85,7 @@
       transition: opacity 0.3s ease;
     }
 
-    /* 特別ストーリー用：枠を薄く、一番下に配置し、不要なUIを完全非表示にするスタイル */
+    /* 特別ストーリー用：枠を薄く、一番下に配置し、ヘッダー自体を消して余白をなくすスタイル */
     .phone-screen.special-mode .message-window {
       background: transparent;
       backdrop-filter: none;
@@ -108,20 +108,15 @@
       margin-bottom: 2px;
     }
 
+    /* 特別ストーリー時はヘッダー（名前やボタン）を完全に非表示にして上の余白を消す */
     .phone-screen.special-mode .header-box {
-      margin-bottom: 2px;
-    }
-
-    /* 特別ストーリー時は回収数・BGMボタン・ENDバッジを非表示 */
-    .phone-screen.special-mode .clear-count,
-    .phone-screen.special-mode .bgm-btn,
-    .phone-screen.special-mode .end-badge {
       display: none !important;
     }
 
     .phone-screen.special-mode .text-box {
       font-size: 0.86rem;
       text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      min-height: auto;
     }
 
     .phone-screen.special-mode .next-arrow {
@@ -148,10 +143,6 @@
       color: #f48fb1;
       font-weight: bold;
       letter-spacing: 1px;
-    }
-
-    .phone-screen.special-mode .speaker-name {
-      color: #ffd54f;
     }
 
     .header-right {
@@ -280,7 +271,7 @@
 
 <div class="phone-screen" id="phone-screen">
 
-  <!-- BGM（通常用 & 甘い特別ストーリー用） -->
+  <!-- BGM（通常用 & 特別ストーリー用の甘いBGM） -->
   <audio id="bgm" loop preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
   </audio>
@@ -450,20 +441,20 @@
       ]
     },
 
-    // 全6エンド回収後に解放される特別ストーリー（「これからもよろしくね」を追加）
+    // 全6エンド回収後に解放される特別ストーリー（名前非表示＆専用甘いBGM）
     special_story: {
       isSpecial: true,
       lines: [
         { speaker: "", image: "special.png", text: "すべてのエンディングを巡り、数え切れないほどの言葉と感情を交わしたふたり。" },
         { speaker: "", image: "special.png", text: "静寂に包まれたラウンジの空気は、初めてここに来た夜よりもずっと甘く、穏やかに満ちていた。" },
-        { speaker: "エレナ", image: "special.png", text: "「まさか、すべての思い出を私と本当に共有してくれるなんて……なんだか夢みたいだわ。」" },
+        { speaker: "", image: "special.png", text: "「まさか、すべての思い出を私と本当に共有してくれるなんて……なんだか夢みたいだわ。」" },
         { speaker: "", image: "special.png", text: "彼女は顔を真っ赤に染め、ドキドキと早鐘を打つ胸元をそっと押さえながら、照れくさそうに視線を泳がせる。" },
-        { speaker: "エレナ", image: "special.png", text: "「いつもは余裕なふりをしてるけど……あなたの前だと、どうしてこうも狂わされてしまうのかしら。」" },
+        { speaker: "", image: "special.png", text: "「いつもは余裕なふりをしてるけど……あなたの前だと、どうしてこうも狂わされてしまうのかしら。」" },
         { speaker: "", image: "special.png", text: "潤んだ瞳でまっすぐ見つめられ、言葉にできない熱がふたりの間にじっとりと溶けていく。" },
-        { speaker: "エレナ", image: "special.png", text: "「どんな結末を迎えたとしても、私の隣にいてくれるのはいつだってあなただけだったわ。」" },
-        { speaker: "エレナ", image: "special.png", text: "「もう他の誰にも渡さないし、どこにも行かせないから……覚悟してよね？」" },
-        { speaker: "エレナ", image: "special.png", text: "「ねえ、これからの未来もずっと……私のことだけを、その瞳に映し続けてくれる？」" },
-        { speaker: "エレナ", image: "special.png", text: "「……なんて、少し恥ずかしいけど……こんな私だけど、これからもずっとよろしくね？」" },
+        { speaker: "", image: "special.png", text: "「どんな結末を迎えたとしても、私の隣にいてくれるのはいつだってあなただけだったわ。」" },
+        { speaker: "", image: "special.png", text: "「もう他の誰にも渡さないし、どこにも行かせないから……覚悟してよね？」" },
+        { speaker: "", image: "special.png", text: "「ねえ、これからの未来もずっと……私のことだけを、その瞳に映し続けてくれる？」" },
+        { speaker: "", image: "special.png", text: "「……なんて、少し恥ずかしいけど……こんな私だけど、これからもずっとよろしくね？」" },
         { speaker: "", image: "special.png", text: "熱を帯びた彼女の手がそっと重なり、ふたりの時間は永遠の甘い静寂へと溶けていった――" }
       ],
       choices: [
@@ -509,7 +500,7 @@
       otherBgm.currentTime = 0;
     }
 
-    if (bgmStarted) {
+    if (bgmStarted || scenario[currentSceneKey].isSpecial) {
       activeBgm.play().catch(() => {});
     }
   }
@@ -597,6 +588,7 @@
           specialBtn.innerText = "✨ 解放された特別ストーリーを読む";
           specialBtn.onclick = (e) => {
             e.stopPropagation();
+            bgmStarted = true;
             currentSceneKey = "special_story";
             currentLineIndex = 0;
             render();
