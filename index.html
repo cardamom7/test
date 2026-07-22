@@ -29,8 +29,9 @@
       max-width: 390px;
       height: 780px;
       max-height: 92vh;
-      /* 上品でラグジュアリーなダークパープル背景 */
-      background: linear-gradient(180deg, #2b1b2d 0%, #120c18 100%);
+      background: linear-gradient(180deg, rgba(20, 15, 30, 0.3) 0%, rgba(10, 8, 15, 0.7) 100%),
+                  url('bg.png') center / cover no-repeat;
+      background-color: #1a1222;
       border-radius: 24px;
       position: relative;
       overflow: hidden;
@@ -39,7 +40,7 @@
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
     }
 
-    /* 1. キャラクター表示エリア（枠外をカット） */
+    /* 1. キャラクター表示エリア */
     .character-area {
       position: absolute;
       top: 0;
@@ -51,35 +52,35 @@
       align-items: flex-start;
       z-index: 1;
       pointer-events: none;
-      overflow: hidden; /* はみ出た足をカットしてバストアップ化 */
+      overflow: hidden;
     }
 
-    /* 全身画像をパルマ風ドアップ（バストアップ）に拡大表示する設定 */
+    /* バストアップ表示 */
     .character-img {
-      width: 175%; /* 大きく拡大してドアップ表示 */
+      width: 175%;
       max-width: none;
       height: auto;
-      margin-top: -10px; /* 頭頂部の位置調整 */
-      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
-      transition: all 0.3s ease;
+      margin-top: -10px;
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.6));
+      transition: opacity 0.2s ease-in-out;
     }
 
-    /* 2. セリフ表示エリア（1画面完結・スクロール完全なし） */
+    /* 2. セリフ表示エリア（260px固定・スクロールなし） */
     .message-window {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 260px; /* 固定サイズ */
-      background: rgba(18, 12, 22, 0.88); 
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      height: 260px;
+      background: rgba(15, 10, 20, 0.88); 
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 14px 16px 12px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       z-index: 10;
-      border-top: 1px solid rgba(235, 130, 180, 0.25);
+      border-top: 1px solid rgba(244, 143, 177, 0.3);
       cursor: pointer;
     }
 
@@ -91,7 +92,7 @@
     /* 名前表示 */
     .speaker-name {
       font-size: 0.88rem;
-      color: #f48fb1; /* キャラクターに合わせた綺麗なピンク */
+      color: #f48fb1;
       font-weight: bold;
       letter-spacing: 1px;
       margin-bottom: 4px;
@@ -105,11 +106,11 @@
       min-height: 42px;
     }
 
-    /* 右下のタップ送りマーク */
+    /* タップ送りマーク */
     .next-arrow {
       align-self: flex-end;
       font-size: 0.8rem;
-      color: rgba(244, 143, 177, 0.8);
+      color: rgba(244, 143, 177, 0.85);
       animation: bounce 1.2s infinite ease-in-out;
       margin-top: 2px;
     }
@@ -128,9 +129,9 @@
     }
 
     .choice-btn {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.12);
       color: #ffffff;
-      border: 1px solid rgba(244, 143, 177, 0.3);
+      border: 1px solid rgba(244, 143, 177, 0.35);
       padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
@@ -141,7 +142,7 @@
     }
 
     .choice-btn:hover {
-      background: rgba(244, 143, 177, 0.25);
+      background: rgba(244, 143, 177, 0.28);
       border-color: #f48fb1;
     }
   </style>
@@ -150,12 +151,12 @@
 
 <div class="phone-screen">
 
-  <!-- キャラクター画像（自動でドアップ表示されます） -->
+  <!-- キャラクター画像 -->
   <div class="character-area">
-    <img src="character.png" class="character-img" alt="キャラクター">
+    <img id="char-img" src="character.png" class="character-img" alt="キャラクター">
   </div>
 
-  <!-- セリフ表示（枠タップで進行） -->
+  <!-- セリフ枠 -->
   <div class="message-window" id="message-window">
     <div class="dialogue-content">
       <div class="speaker-name" id="speaker">名前</div>
@@ -168,41 +169,113 @@
 </div>
 
 <script>
+  // ★セリフボリュームを大幅に増量したシナリオ構造★
   const scenario = {
     start: {
       lines: [
-        { speaker: "エレナ", text: "「あら、ふふ……お待たせ。今日のあなた、なんだか雰囲気が違って素敵ね。」" },
-        { speaker: "エレナ", text: "「そんなにじっと見つめられたら、私でも少し照れてしまうわ。」" },
-        { speaker: "エレナ", text: "「ねえ……今日の私、あなたの目にはどう映っているかしら？」" }
+        { speaker: "エレナ", image: "character.png", text: "「ふぅ……ようやく静かになったわね。夜風が気持ちいいわ。」" },
+        { speaker: "エレナ", image: "character.png", text: "「あら、ふふ……お待たせ。そんなにじっと見つめられたら照れてしまうわ。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「でも……今日のあなた、なんだか雰囲気が違ってすごく素敵ね。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「二人きりで夜景を眺めるなんて、なんだかロマンチックだと思わない？」" },
+        { speaker: "エレナ", image: "character.png", text: "「ねえ……今日の私、あなたの目にはどう映っているかしら？」" }
       ],
       choices: [
         { text: "「すごく美しくて見惚れていました」と正直に伝える", next: "beauty" },
         { text: "「かっこよくてドキドキします」と照れる", next: "cool" },
-        { text: "「エレナさんこそ、いつも素敵です」と微笑む", next: "smile" }
+        { text: "「エレナさんこそ、いつも魅力的です」と微笑む", next: "smile_route" }
       ]
     },
+
+    // --- ルート1: 美しくて見惚れた ---
     beauty: {
       lines: [
-        { speaker: "エレナ", text: "「見惚れてくれたの？……ふふ、最高の褒め言葉ね。」" },
-        { speaker: "エレナ", text: "「今夜はもう少しだけ、あなたの近くにいてもいいかしら？」" }
+        { speaker: "エレナ", image: "smile.png", text: "「見惚れてくれたの？……ふふっ、ありがとう。最高の褒め言葉ね！」" },
+        { speaker: "エレナ", image: "character.png", text: "「そんな真っ直ぐな瞳でおねだりされたら、大人の余裕なんて吹き飛んでしまいそうだわ。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「私ね、あなたのそういう素直で一生懸命なところ……すごく好きよ。」" },
+        { speaker: "エレナ", image: "character.png", text: "「ねえ……今夜は、もう少しだけ私に付き合ってくれるかしら？」" }
+      ],
+      choices: [
+        { text: "「喜んで。朝まで側にいます」と手を重ねる", next: "beauty_deep" },
+        { text: "「エレナさんの気が済むまで」と微笑む", next: "beauty_sweet" }
+      ]
+    },
+    beauty_deep: {
+      lines: [
+        { speaker: "エレナ", image: "smile.png", text: "「朝まで……？ ふふ、そんな大胆なお誘い、断る理由がないわ。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「今夜は絶対に逃がしてあげないから……覚悟しておいてね？」" }
       ],
       choices: [
         { text: "最初に戻る", next: "start" }
       ]
     },
+    beauty_sweet: {
+      lines: [
+        { speaker: "エレナ", image: "smile.png", text: "「気が済むまで、ね。それなら……一生離れられなくなっちゃうかもしれないわよ？」" },
+        { speaker: "エレナ", image: "character.png", text: "「ふふっ、冗談じゃないわ。本気よ？」" }
+      ],
+      choices: [
+        { text: "最初に戻る", next: "start" }
+      ]
+    },
+
+    // --- ルート2: かっこよくてドキドキ ---
     cool: {
       lines: [
-        { speaker: "エレナ", text: "「ドキドキさせてしまったかしら？……かわいい人。」" },
-        { speaker: "エレナ", text: "「でもね、本当は私のほうこそ緊張しているのよ？」" }
+        { speaker: "エレナ", image: "smile.png", text: "「ドキドキさせてしまったかしら？……ふふ、そんな顔も本当にかわいいわ。」" },
+        { speaker: "エレナ", image: "character.png", text: "「でもね、本当は……私の方こそ、あなたといると胸が高鳴っているの。」" },
+        { speaker: "エレナ", image: "character.png", text: "「かっこいい自分でいようと思っても、あなたの前だと素が出てしまいそうになるのよ。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「内緒よ？ 他の誰にも見せたことのない、私の特別な一面なんだから。」" }
+      ],
+      choices: [
+        { text: "「エレナさんのこと、もっと知りたいです」", next: "cool_secret" },
+        { text: "「素のエレナさんも可愛いです」", next: "cool_cute" }
+      ]
+    },
+    cool_secret: {
+      lines: [
+        { speaker: "エレナ", image: "smile.png", text: "「ふふ、欲張りさんね。私の秘密は一筋縄じゃ解き明かせないわよ？」" },
+        { speaker: "エレナ", image: "smile.png", text: "「これから時間をかけて、ゆっくり……ひとつずつ教えてあげるわ。」" }
       ],
       choices: [
         { text: "最初に戻る", next: "start" }
       ]
     },
-    smile: {
+    cool_cute: {
       lines: [
-        { speaker: "エレナ", text: "「まあ、上手な返しね。でもとっても嬉しいわ。」" },
-        { speaker: "エレナ", text: "「ふふ、二人だけの特別な時間にしましょうか。」" }
+        { speaker: "エレナ", image: "character.png", text: "「可愛い、だなんて……普段なら聞き流すけれど、あなたに言われると照れるわね。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「……特別に、あなたにだけは見せてあげてもいいかしら。」" }
+      ],
+      choices: [
+        { text: "最初に戻る", next: "start" }
+      ]
+    },
+
+    // --- ルート3: いつも魅力的 ---
+    smile_route: {
+      lines: [
+        { speaker: "エレナ", image: "smile.png", text: "「まあ、上手な返しね！ でも……あなたの言葉だから特別に嬉しいわ。」" },
+        { speaker: "エレナ", image: "character.png", text: "「誰にでもそんな素敵なことを言っているわけじゃないわよね？」" },
+        { speaker: "エレナ", image: "character.png", text: "「もし他の人にも言っているなら、ちょっと嫉妬してしまうかもしれないわ。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「ふふ、冗談よ。さあ、二人だけの特別な時間を楽しむとしましょうか。」" }
+      ],
+      choices: [
+        { text: "「エレナさんだけにしか言っていません」と伝える", next: "smile_only" },
+        { text: "「嫉妬してくれるエレナさんも素敵です」と返す", next: "smile_jealous" }
+      ]
+    },
+    smile_only: {
+      lines: [
+        { speaker: "エレナ", image: "smile.png", text: "「……！ 真顔でそんなこと言うなんて、ズルいわ。」" },
+        { speaker: "エレナ", image: "smile.png", text: "「嬉しくて、胸がいっぱいになっちゃったじゃない。……本当、大好きよ。」" }
+      ],
+      choices: [
+        { text: "最初に戻る", next: "start" }
+      ]
+    },
+    smile_jealous: {
+      lines: [
+        { speaker: "エレナ", image: "smile.png", text: "「あら、私の嫉妬を楽しむなんて、意外と悪悪ね？」" },
+        { speaker: "エレナ", image: "smile.png", text: "「そんな悪い子には……もっと特別な『おしおき』が必要かしらね、ふふっ。」" }
       ],
       choices: [
         { text: "最初に戻る", next: "start" }
@@ -213,6 +286,7 @@
   let currentSceneKey = "start";
   let currentLineIndex = 0;
 
+  const charImgEl = document.getElementById("char-img");
   const speakerEl = document.getElementById("speaker");
   const storyTextEl = document.getElementById("story-text");
   const choicesContainer = document.getElementById("choices");
@@ -222,6 +296,11 @@
   function render() {
     const scene = scenario[currentSceneKey];
     const currentLine = scene.lines[currentLineIndex];
+
+    // 画像の切り替え
+    if (charImgEl.getAttribute("src") !== currentLine.image) {
+      charImgEl.src = currentLine.image;
+    }
 
     speakerEl.innerText = currentLine.speaker;
     storyTextEl.innerText = currentLine.text;
@@ -252,6 +331,7 @@
     }
   }
 
+  // 枠全体タップで次のセリフへ
   windowEl.onclick = () => {
     const scene = scenario[currentSceneKey];
     const isLastLine = currentLineIndex === scene.lines.length - 1;
