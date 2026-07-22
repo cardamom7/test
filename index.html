@@ -12,7 +12,7 @@
     }
     body {
       font-family: "Hiragino Sans", "Meiryo", sans-serif;
-      background-color: #1a1a24;
+      background-color: #121218;
       color: #333;
       display: flex;
       justify-content: center;
@@ -27,68 +27,60 @@
       max-width: 390px;
       height: 780px;
       max-height: 92vh;
-      /* ↓ 背景の色やグラデーションはここでお好きな色に変えられます */
-      background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 100%);
-      border-radius: 20px;
+      /* 上品なダーク系の背景グラデーション */
+      background: linear-gradient(180deg, #2a2438 0%, #15121e 100%);
+      border-radius: 24px;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
     }
 
-    /* 1. キャラクター表示エリア（画面全体に大きく配置） */
+    /* 1. キャラクター表示エリア（画面中央〜下に迫る配置） */
     .character-area {
       position: absolute;
-      top: 0;
+      top: 20px;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 85%;
       display: flex;
       justify-content: center;
-      align-items: flex-end; /* キャラクターを下に寄せてバストアップ表示 */
-      padding-bottom: 120px; /* セリフ枠と自然に被る位置に調整 */
+      align-items: flex-end;
       z-index: 1;
     }
 
-    /* キャラクターのサイズ感（ドアップ表示） */
-    .character-image {
-      /* イラスト画像を使う場合はこちらを有効化 */
-      max-width: 120%;
-      height: 75%;
-      object-fit: contain;
+    /* キャラクターイラストのサイズ感 */
+    .character-svg {
+      width: 100%;
+      height: 100%;
+      max-width: 360px;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+      transition: all 0.3s ease;
     }
 
-    .character-avatar {
-      /* アイコン・絵文字テスト用の超巨大表示 */
-      font-size: 160px;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
-      transition: transform 0.2s ease;
-    }
-
-    /* 2. セリフ表示エリア（画面下に被さる半透明枠） */
+    /* 2. セリフ表示エリア（画面下に被さるすりガラス風枠） */
     .message-window {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      min-height: 180px;
-      /* ↓ セリフ枠の背景色・透け感（黒系でもピンク系でも変更自由） */
-      background: rgba(20, 20, 30, 0.75); 
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      padding: 18px 20px 24px;
+      min-height: 185px;
+      background: rgba(18, 15, 25, 0.78); 
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 18px 20px 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      z-index: 10; /* キャラクターの上に重ねる */
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 10;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     /* 名前表示 */
     .speaker-name {
       font-size: 0.95rem;
-      color: #ff80ab; /* 名前の文字色 */
+      color: #9dcd5a; /* パルマ風のやわらかいアクセントカラー */
       font-weight: bold;
       letter-spacing: 1px;
       margin-bottom: 6px;
@@ -98,8 +90,8 @@
     .text-box {
       font-size: 1rem;
       line-height: 1.6;
-      color: #ffffff; /* セリフの文字色 */
-      min-height: 50px;
+      color: #ffffff;
+      min-height: 52px;
     }
 
     /* 右下の送りマーク（∨） */
@@ -124,9 +116,9 @@
     }
 
     .choice-btn {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.12);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       padding: 11px 15px;
       border-radius: 8px;
       cursor: pointer;
@@ -136,8 +128,8 @@
     }
 
     .choice-btn:hover {
-      background: rgba(255, 128, 171, 0.4);
-      border-color: #ff80ab;
+      background: rgba(157, 205, 90, 0.25);
+      border-color: #9dcd5a;
     }
   </style>
 </head>
@@ -145,15 +137,54 @@
 
 <div class="phone-screen">
 
-  <!-- キャラクター表示（後ろに重なる） -->
+  <!-- イケメンキャラクターイラスト（SVG描画） -->
   <div class="character-area">
-    <div class="character-avatar" id="avatar">🤵‍♂️</div>
+    <svg class="character-svg" viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
+      <!-- 服・ジャケット -->
+      <path d="M 40 380 L 75 250 C 110 240 190 240 225 250 L 260 380 Z" fill="#232733" />
+      <path d="M 115 245 L 150 310 L 185 245 L 170 245 L 150 285 L 130 245 Z" fill="#e8edf0" />
+      
+      <!-- 首 -->
+      <rect x="132" y="190" width="36" height="60" fill="#fce3d5" rx="4"/>
+      <path d="M 132 215 C 150 225 150 225 168 215 L 168 250 L 132 250 Z" fill="#ebd0c0" />
+      
+      <!-- 輪郭（顎ライン） -->
+      <polygon points="102,100 198,100 182,180 150,212 118,180" fill="#fde8dc" />
+      
+      <!-- 耳 -->
+      <ellipse cx="98" cy="140" rx="7" ry="15" fill="#fde8dc" />
+      <ellipse cx="202" cy="140" rx="7" ry="15" fill="#fde8dc" />
+      
+      <!-- 瞳（クールなブルーグレー） -->
+      <!-- 左目 -->
+      <path d="M 116 132 Q 130 124 142 133" stroke="#222" stroke-width="2.5" fill="none" />
+      <ellipse cx="129" cy="140" rx="5" ry="7" fill="#3a6073" />
+      <circle cx="127" cy="137" r="1.5" fill="#ffffff" />
+      <!-- 右目 -->
+      <path d="M 158 133 Q 170 124 184 132" stroke="#222" stroke-width="2.5" fill="none" />
+      <ellipse cx="171" cy="140" rx="5" ry="7" fill="#3a6073" />
+      <circle cx="169" cy="137" r="1.5" fill="#ffffff" />
+      
+      <!-- 眉毛（キリッとした印象） -->
+      <path d="M 112 122 Q 128 116 142 123" stroke="#2b2d38" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      <path d="M 158 123 Q 172 116 188 122" stroke="#2b2d38" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      
+      <!-- 鼻・口 -->
+      <path d="M 150 144 L 147 162 L 153 164" stroke="#e0beaa" stroke-width="1.8" fill="none" />
+      <path d="M 140 180 Q 150 184 160 180" stroke="#d48a8a" stroke-width="2" fill="none" stroke-linecap="round" />
+      
+      <!-- 髪型（サラサラのダークアッシュヘア） -->
+      <path d="M 85 125 C 78 60 120 30 150 30 C 180 30 222 60 215 125 C 228 80 195 40 150 40 C 105 40 72 80 85 125 Z" fill="#2b2d38" />
+      <!-- 前髪の束 -->
+      <path d="M 90 105 Q 122 135 132 105 Q 150 148 162 110 Q 182 140 210 100 C 200 60 100 60 90 105 Z" fill="#3b3e4f" />
+      <path d="M 135 95 Q 148 128 152 95" stroke="#4f5368" stroke-width="2" fill="none" />
+    </svg>
   </div>
 
   <!-- セリフ表示（手前に重なる） -->
   <div class="message-window">
     <div>
-      <div class="speaker-name" id="speaker">キャラ名</div>
+      <div class="speaker-name" id="speaker">ハルト</div>
       <div class="text-box" id="story-text">読み込み中...</div>
     </div>
     <div class="next-arrow" id="arrow">∨</div>
@@ -163,29 +194,25 @@
 </div>
 
 <script>
-  // シナリオデータの構造
   const scenario = {
     start: {
-      speaker: "神代 蓮",
-      avatar: "🤵‍♂️",
-      text: "「こうして近くで君の顔を見ていると……なんだか不思議な気分になるよ。」",
+      speaker: "ハルト",
+      text: "「……急に呼んでごめんね。どうしても君に直接伝えたかったんだ。」",
       choices: [
-        { text: "「私もだよ」と見つめ返す", next: "look" },
-        { text: "「顔が近すぎるよ！」と照れる", next: "shy" }
+        { text: "「どうしたの？」と優しく聞く", next: "kind" },
+        { text: "「要件は手短にどうぞ」とクールに言う", next: "cool" }
       ]
     },
-    look: {
-      speaker: "神代 蓮",
-      avatar: "🥰",
-      text: "「ふふ、そんなに真っ直ぐ見つめられたら、僕の方がドキドキしちゃうな。」",
+    kind: {
+      speaker: "ハルト",
+      text: "「ふふ、君のそういう優しいところ……本当にずるいよ。」",
       choices: [
         { text: "最初に戻る", next: "start" }
       ]
     },
-    shy: {
-      speaker: "神代 蓮",
-      avatar: "😊",
-      text: "「ごめんごめん、あまりに君が可愛いから、つい引き寄せられちゃって。」",
+    cool: {
+      speaker: "ハルト",
+      text: "「相変わらず手厳しいな。……でも、そんなところも君らしいよ。」",
       choices: [
         { text: "最初に戻る", next: "start" }
       ]
@@ -196,7 +223,6 @@
     const scene = scenario[sceneKey];
     document.getElementById("speaker").innerText = scene.speaker;
     document.getElementById("story-text").innerText = scene.text;
-    document.getElementById("avatar").innerText = scene.avatar || "🤵‍♂️";
 
     const choicesContainer = document.getElementById("choices");
     const arrow = document.getElementById("arrow");
