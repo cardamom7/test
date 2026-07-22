@@ -85,7 +85,7 @@
       transition: opacity 0.3s ease;
     }
 
-    /* 特別ストーリー用：枠を消して全画面タップ可能にするスタイル */
+    /* 特別ストーリー用：枠をさらに薄くし、もっと下へ配置するスタイル */
     .phone-screen.special-mode .message-window {
       background: transparent;
       backdrop-filter: none;
@@ -94,18 +94,18 @@
       pointer-events: auto;
       height: 100%;
       justify-content: flex-end;
-      padding: 20px 16px 35px 16px;
+      padding: 20px 14px 14px 14px; /* 下部マージンを詰めてさらに下へ */
     }
 
     .phone-screen.special-mode .dialogue-content {
-      background: rgba(10, 5, 15, 0.75);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 213, 79, 0.3);
-      border-radius: 12px;
-      padding: 12px 14px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      margin-bottom: 10px;
+      background: rgba(10, 5, 15, 0.45); /* 背景の黒をかなり薄くしてイラストを見せる */
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 213, 79, 0.25);
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      margin-bottom: 2px; /* 限界まで下に寄せる */
     }
 
     .phone-screen.special-mode .header-box {
@@ -113,13 +113,13 @@
     }
 
     .phone-screen.special-mode .text-box {
-      font-size: 0.88rem;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      font-size: 0.86rem;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
     }
 
     .phone-screen.special-mode .next-arrow {
       color: rgba(255, 213, 79, 0.9);
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .dialogue-content {
@@ -443,17 +443,20 @@
       ]
     },
 
-    // 全6エンド回収後に解放される特別ストーリー（専用イラスト `special.png`）
+    // 全6エンド回収後に解放される特別ストーリー（分量をボリュームアップ！）
     special_story: {
       isSpecial: true,
       lines: [
-        { speaker: "", image: "special.png", text: "すべてのエンディングを巡り、数え切れないほどの言葉を交わしたふたり。" },
-        { speaker: "", image: "special.png", text: "静寂に包まれたラウンジの空気は、最初の夜よりもずっと甘く、穏やかに満ちていた。" },
-        { speaker: "エレナ", image: "special.png", text: "「まさか、すべての思い出を私と共有してくれるなんて……本当にありがとう。」" },
-        { speaker: "", image: "special.png", text: "彼女は顔を赤らめ、ドキドキと高鳴る鼓動を隠すようにそっと視線を逸らしたあと、まっすぐに見つめてくる。" },
-        { speaker: "エレナ", image: "special.png", text: "「どんな結末を迎えたとしても、私の隣にいてくれるのはいつだってあなただったわ。」" },
-        { speaker: "エレナ", image: "special.png", text: "「これからはもう迷わせない。……ねえ、これからの未来も、ずっと私だけを見てくれるわよね？」" },
-        { speaker: "", image: "special.png", text: "熱を帯びた瞳で見つめられ、胸の奥が締め付けられるような甘い余韻に包まれていく――" }
+        { speaker: "", image: "special.png", text: "すべてのエンディングを巡り、数え切れないほどの言葉と感情を交わしたふたり。" },
+        { speaker: "", image: "special.png", text: "静寂に包まれたラウンジの空気は、初めてここに来た夜よりもずっと甘く、穏やかに満ちていた。" },
+        { speaker: "エレナ", image: "special.png", text: "「まさか、すべての思い出を私と本当に共有してくれるなんて……なんだか夢みたいだわ。」" },
+        { speaker: "", image: "special.png", text: "彼女は顔を真っ赤に染め、ドキドキと早鐘を打つ胸元をそっと押さえながら、照れくさそうに視線を泳がせる。" },
+        { speaker: "エレナ", image: "special.png", text: "「いつもは余裕なふりをしてるけど……あなたの前だと、どうしてこうも狂わされてしまうのかしら。」" },
+        { speaker: "", image: "special.png", text: "潤んだ瞳でまっすぐ見つめられ、言葉にできない熱がふたりの間にじっとりと溶けていく。" },
+        { speaker: "エレナ", image: "special.png", text: "「どんな結末を迎えたとしても、私の隣にいてくれるのはいつだってあなただけだったわ。」" },
+        { speaker: "エレナ", image: "special.png", text: "「もう他の誰にも渡さないし、どこにも行かせないから……覚悟してよね？」" },
+        { speaker: "エレナ", image: "special.png", text: "「ねえ、これからの未来もずっと……私のことだけを、その瞳に映し続けてくれる？」" },
+        { speaker: "", image: "special.png", text: "熱を帯びた彼女の手がそっと重なり、ふたりの時間は永遠の甘い静寂へと溶けていった――" }
       ],
       choices: [
         { text: "タイトルに戻る", next: "start" }
@@ -525,7 +528,6 @@
     const scene = scenario[currentSceneKey];
     const currentLine = scene.lines[currentLineIndex];
 
-    // 特別ストーリーの時は枠を消す専用モードクラスを適用
     if (scene.isSpecial) {
       phoneScreenEl.classList.add("special-mode");
     } else {
@@ -581,7 +583,6 @@
 
         choicesContainer.appendChild(listContainer);
 
-        // 正しく全6エンドコンプリートしている場合のみボタンを表示
         if (clearedEnds.length === allEnds.length) {
           const specialBtn = document.createElement("button");
           specialBtn.className = "choice-btn special-choice-btn";
