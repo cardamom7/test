@@ -3,44 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>シュールノベルゲーム</title>
+  <title>シュール乙女ゲーム</title>
   <style>
     body {
-      font-family: "Helvetica Neue", Arial, sans-serif;
-      background-color: #1a1a24;
-      color: #fff;
+      font-family: "Hiragino Sans", "Meiryo", sans-serif;
+      background: linear-gradient(135deg, #ffe6e9 0%, #ffd1dc 100%);
+      color: #4a4a4a;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
-      padding: 20px;
+      padding: 15px;
       box-sizing: border-box;
     }
     .game-container {
       width: 100%;
-      max-width: 600px;
-      background-color: #2a2a38;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      border: 2px solid #4a4a60;
+      max-width: 550px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(220, 100, 130, 0.2);
+      border: 3px solid #ffb6c1;
+    }
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff0f5;
+      padding: 8px 16px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      color: #d87093;
+      font-weight: bold;
     }
     .speaker-tag {
       font-weight: bold;
-      color: #ffcc00;
+      color: #d87093;
       margin-bottom: 8px;
       font-size: 1.1rem;
+      border-left: 4px solid #ff69b4;
+      padding-left: 8px;
     }
     .text-box {
-      background-color: #161620;
+      background-color: #ffffff;
       padding: 18px;
-      border-radius: 8px;
-      min-height: 80px;
+      border-radius: 12px;
+      min-height: 90px;
       font-size: 1rem;
-      line-height: 1.6;
+      line-height: 1.7;
       margin-bottom: 20px;
-      border: 1px solid #3a3a4c;
+      border: 2px solid #ffe4e1;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
     .choices-container {
       display: flex;
@@ -48,101 +63,111 @@
       gap: 10px;
     }
     .choice-btn {
-      background-color: #3b3b54;
-      color: #ffffff;
-      border: 1px solid #5a5a78;
-      padding: 12px 16px;
-      border-radius: 6px;
+      background-color: #fff0f5;
+      color: #c71585;
+      border: 2px solid #ffb6c1;
+      padding: 12px 18px;
+      border-radius: 25px;
       cursor: pointer;
       font-size: 0.95rem;
-      text-align: left;
+      font-weight: bold;
+      text-align: center;
       transition: all 0.2s;
     }
     .choice-btn:hover {
-      background-color: #505072;
-      border-color: #ffcc00;
+      background-color: #ff69b4;
+      color: #ffffff;
+      border-color: #ff69b4;
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
 
 <div class="game-container">
+  <div class="status-bar">
+    <span>🌸 攻略対象：神代 蓮（かみしろ れん）</span>
+    <span id="love-meter">好感度: ♡♡♡♡♡</span>
+  </div>
   <div class="speaker-tag" id="speaker">???</div>
-  <div class="text-box" id="story-text">ゲームを読み込み中...</div>
+  <div class="text-box" id="story-text">読み込み中...</div>
   <div class="choices-container" id="choices"></div>
 </div>
 
 <script>
-  // ゲームのデータ（シナリオ）
+  let lovePoints = 0; // 好感度カウンター
+
   const scenario = {
     start: {
       speaker: "ナレーション",
-      text: "勇者よ、よくぞここまで辿り着いた。岩に突き刺さる「伝説のブロッコリー」が、静かにあなたを見つめている……。",
+      text: "曲がり角で勢いよく何かにぶつかってしまった！食パン……ではなく、なぜか「長ネギ」を口に加えた超絶イケメンが倒れている。",
       choices: [
-        { text: "両手で力任せに引き抜く", next: "pull" },
-        { text: "マヨネーズをかけてみる", next: "mayo" },
-        { text: "「おいしい？」と話しかける", next: "talk" }
+        { text: "「大丈夫ですか！？」と手を差し伸べる", next: "hand" },
+        { text: "ネギの産地を尋ねる", next: "negi" },
+        { text: "自分もポケットからアスパラを出す", next: "asparagus" }
       ]
     },
-    pull: {
-      speaker: "伝説のブロッコリー",
-      text: "「痛い痛い痛い！根っこ引っ張らないで！そこ関節！！」",
+    hand: {
+      speaker: "神代 蓮",
+      text: "「フッ……触るな。俺の美しさに触れると、君の細胞が驚いて爆発するぞ。」（※好感度が下がった）",
       choices: [
-        { text: "ごめんと言って手を離す", next: "apologize" },
-        { text: "構わず引き抜く", next: "bad_end" }
+        { text: "「すみませんでした」と謝る", next: "sorry", love: -1 },
+        { text: "「じゃあ爆発してみせます！」と挑む", next: "challenge", love: 1 }
       ]
     },
-    mayo: {
-      speaker: "伝説のブロッコリー",
-      text: "「あ〜〜〜ッ！！カロリー！！いまダイエット中なんですけど！！」",
+    negi: {
+      speaker: "神代 蓮",
+      text: "「ふっ、目が高いね。これは深谷産だ。君、ネギの味がわかる女だな……気に入った。」（※好感度アップ！）",
       choices: [
-        { text: "カロリーハーフを塗り直す", next: "diet" },
-        { text: "黙って完食する", next: "eat_end" }
+        { text: "微笑んで「ネギはお薬になりますしね」と言う", next: "next_event", love: 2 },
+        { text: "「実は私、タマネギ派なんです」と伝える", next: "onion", love: -2 }
       ]
     },
-    talk: {
-      speaker: "伝説のブロッコリー",
-      text: "「茹で加減によるね。ちなみに僕は固め推奨派。」",
+    asparagus: {
+      speaker: "神代 蓮",
+      text: "「……対抗意識か？嫌いじゃないよ、その威圧感。」（※好感度アップ！）",
       choices: [
-        { text: "気が合いそうなので友達になる", next: "friend_end" },
-        { text: "塩を振る", next: "salt" }
+        { text: "そのまま野菜バトルを始める", next: "battle_end", love: 1 }
       ]
     },
 
-    // エンディング類
-    apologize: {
+    // 展開の例
+    sorry: {
+      speaker: "神代 蓮",
+      text: "「素直な子は好きだよ。でもネギはあげないからね。」【普通END】",
+      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
+    },
+    challenge: {
+      speaker: "神代 蓮",
+      text: "「面白い……！君、明日から俺の専属ネギ係になりなよ！」【ネギ係END】",
+      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
+    },
+    next_event: {
+      speaker: "神代 蓮",
+      text: "「ふふ、君といると退屈しないな。今度、僕の自慢のファミレスに連れて行ってあげるよ。」【グッドハッピーEND】",
+      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
+    },
+    onion: {
       speaker: "ナレーション",
-      text: "お互いに気まずい空気が流れた。勇者は静かに旅を諦めた……。【気まずいEND】",
-      choices: [{ text: "最初からやり直す", next: "start" }]
+      text: "激しい宗教的対立により、2人の恋は儚く散った……。【破局END】",
+      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
     },
-    bad_end: {
+    battle_end: {
       speaker: "ナレーション",
-      text: "ブロッコリーは怒りのあまりスーパーサイヤ人みたいに光り出し、世界は爆発した。【GAME OVER】",
-      choices: [{ text: "最初からやり直す", next: "start" }]
-    },
-    diet: {
-      speaker: "伝説のブロッコリー",
-      text: "「あ、配慮助かる。君、良い勇者だね。世界救うの伝言しとくわ。」【平和解決END】",
-      choices: [{ text: "最初からやり直す", next: "start" }]
-    },
-    eat_end: {
-      speaker: "ナレーション",
-      text: "ビタミンCが身体に満ち溢れた！勇者の肌がツヤツヤになった！【美肌END】",
-      choices: [{ text: "最初からやり直す", next: "start" }]
-    },
-    friend_end: {
-      speaker: "ナレーション",
-      text: "勇者とブロッコリーは最高の親友になり、一緒に居酒屋へ向かった。【HAPPY END】",
-      choices: [{ text: "最初からやり直す", next: "start" }]
-    },
-    salt: {
-      speaker: "伝説のブロッコリー",
-      text: "「塩分控えめでお願いします。」【健康志向END】",
-      choices: [{ text: "最初からやり直す", next: "start" }]
+      text: "2人は夕日を浴びながら野菜を振り回し、最高のライバルとなった。【青春END】",
+      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
     }
   };
 
-  // 画面を更新する処理
+  function updateLoveMeter() {
+    let hearts = "";
+    const count = Math.max(0, Math.min(5, 3 + lovePoints)); // 0〜5の範囲
+    for (let i = 0; i < 5; i++) {
+      hearts += i < count ? "♥" : "♡";
+    }
+    document.getElementById("love-meter").innerText = `好感度: ${hearts}`;
+  }
+
   function showScene(sceneKey) {
     const scene = scenario[sceneKey];
     document.getElementById("speaker").innerText = scene.speaker;
@@ -155,12 +180,20 @@
       const button = document.createElement("button");
       button.className = "choice-btn";
       button.innerText = choice.text;
-      button.onclick = () => showScene(choice.next);
+      button.onclick = () => {
+        if (choice.reset) {
+          lovePoints = 0;
+        } else if (choice.love) {
+          lovePoints += choice.love;
+        }
+        updateLoveMeter();
+        showScene(choice.next);
+      };
       choicesContainer.appendChild(button);
     });
   }
 
-  // ゲーム開始
+  updateLoveMeter();
   showScene("start");
 </script>
 
