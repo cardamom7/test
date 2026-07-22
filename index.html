@@ -19,17 +19,18 @@
       align-items: center;
       min-height: 100vh;
       padding: 10px;
-      user-select: none; /* スマホ連打時の文字選択を防止 */
+      user-select: none;
       -webkit-user-select: none;
     }
 
-    /* スマホ画面フレーム（縦持ちサイズ） */
+    /* スマホ画面フレーム */
     .phone-screen {
       width: 100%;
       max-width: 390px;
       height: 780px;
       max-height: 92vh;
-      background: linear-gradient(180deg, #2a2438 0%, #15121e 100%);
+      /* 上品でラグジュアリーなダークパープル背景 */
+      background: linear-gradient(180deg, #2b1b2d 0%, #120c18 100%);
       border-radius: 24px;
       position: relative;
       overflow: hidden;
@@ -38,36 +39,39 @@
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
     }
 
-    /* 1. キャラクター表示エリア */
+    /* 1. キャラクター表示エリア（枠外をカット） */
     .character-area {
       position: absolute;
-      top: 10px;
+      top: 0;
       left: 0;
       width: 100%;
-      height: 85%;
+      height: 100%;
       display: flex;
       justify-content: center;
-      align-items: flex-end;
+      align-items: flex-start;
       z-index: 1;
       pointer-events: none;
+      overflow: hidden; /* はみ出た足をカットしてバストアップ化 */
     }
 
-    .character-svg {
-      width: 100%;
-      height: 100%;
-      max-width: 360px;
-      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+    /* 全身画像をパルマ風ドアップ（バストアップ）に拡大表示する設定 */
+    .character-img {
+      width: 175%; /* 大きく拡大してドアップ表示 */
+      max-width: none;
+      height: auto;
+      margin-top: -10px; /* 頭頂部の位置調整 */
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
       transition: all 0.3s ease;
     }
 
-    /* 2. セリフ表示エリア（★1画面完結・スクロール絶対なし★） */
+    /* 2. セリフ表示エリア（1画面完結・スクロール完全なし） */
     .message-window {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 260px; /* 3つの選択肢が余裕で収まる高さ */
-      background: rgba(18, 15, 25, 0.88); 
+      height: 260px; /* 固定サイズ */
+      background: rgba(18, 12, 22, 0.88); 
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       padding: 14px 16px 12px;
@@ -75,7 +79,7 @@
       flex-direction: column;
       justify-content: space-between;
       z-index: 10;
-      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(235, 130, 180, 0.25);
       cursor: pointer;
     }
 
@@ -87,7 +91,7 @@
     /* 名前表示 */
     .speaker-name {
       font-size: 0.88rem;
-      color: #9dcd5a;
+      color: #f48fb1; /* キャラクターに合わせた綺麗なピンク */
       font-weight: bold;
       letter-spacing: 1px;
       margin-bottom: 4px;
@@ -101,11 +105,11 @@
       min-height: 42px;
     }
 
-    /* 右下のタップ送りマーク（∨） */
+    /* 右下のタップ送りマーク */
     .next-arrow {
       align-self: flex-end;
       font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(244, 143, 177, 0.8);
       animation: bounce 1.2s infinite ease-in-out;
       margin-top: 2px;
     }
@@ -115,7 +119,7 @@
       50% { transform: translateY(4px); }
     }
 
-    /* 選択肢ボタンエリア（スクロール完全排除） */
+    /* 選択肢ボタンエリア */
     .choices-container {
       display: flex;
       flex-direction: column;
@@ -124,9 +128,9 @@
     }
 
     .choice-btn {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(244, 143, 177, 0.3);
       padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
@@ -137,8 +141,8 @@
     }
 
     .choice-btn:hover {
-      background: rgba(157, 205, 90, 0.25);
-      border-color: #9dcd5a;
+      background: rgba(244, 143, 177, 0.25);
+      border-color: #f48fb1;
     }
   </style>
 </head>
@@ -146,33 +150,12 @@
 
 <div class="phone-screen">
 
-  <!-- イケメンキャラクターイラスト -->
+  <!-- キャラクター画像（自動でドアップ表示されます） -->
   <div class="character-area">
-    <svg class="character-svg" viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
-      <path d="M 40 380 L 75 250 C 110 240 190 240 225 250 L 260 380 Z" fill="#232733" />
-      <path d="M 115 245 L 150 310 L 185 245 L 170 245 L 150 285 L 130 245 Z" fill="#e8edf0" />
-      <rect x="132" y="190" width="36" height="60" fill="#fce3d5" rx="4"/>
-      <path d="M 132 215 C 150 225 150 225 168 215 L 168 250 L 132 250 Z" fill="#ebd0c0" />
-      <polygon points="102,100 198,100 182,180 150,212 118,180" fill="#fde8dc" />
-      <ellipse cx="98" cy="140" rx="7" ry="15" fill="#fde8dc" />
-      <ellipse cx="202" cy="140" rx="7" ry="15" fill="#fde8dc" />
-      <path d="M 116 132 Q 130 124 142 133" stroke="#222" stroke-width="2.5" fill="none" />
-      <ellipse cx="129" cy="140" rx="5" ry="7" fill="#3a6073" />
-      <circle cx="127" cy="137" r="1.5" fill="#ffffff" />
-      <path d="M 158 133 Q 170 124 184 132" stroke="#222" stroke-width="2.5" fill="none" />
-      <ellipse cx="171" cy="140" rx="5" ry="7" fill="#3a6073" />
-      <circle cx="169" cy="137" r="1.5" fill="#ffffff" />
-      <path d="M 112 122 Q 128 116 142 123" stroke="#2b2d38" stroke-width="2.5" fill="none" stroke-linecap="round" />
-      <path d="M 158 123 Q 172 116 188 122" stroke="#2b2d38" stroke-width="2.5" fill="none" stroke-linecap="round" />
-      <path d="M 150 144 L 147 162 L 153 164" stroke="#e0beaa" stroke-width="1.8" fill="none" />
-      <path d="M 140 180 Q 150 184 160 180" stroke="#d48a8a" stroke-width="2" fill="none" stroke-linecap="round" />
-      <path d="M 85 125 C 78 60 120 30 150 30 C 180 30 222 60 215 125 C 228 80 195 40 150 40 C 105 40 72 80 85 125 Z" fill="#2b2d38" />
-      <path d="M 90 105 Q 122 135 132 105 Q 150 148 162 110 Q 182 140 210 100 C 200 60 100 60 90 105 Z" fill="#3b3e4f" />
-      <path d="M 135 95 Q 148 128 152 95" stroke="#4f5368" stroke-width="2" fill="none" />
-    </svg>
+    <img src="character.png" class="character-img" alt="キャラクター">
   </div>
 
-  <!-- セリフ表示 -->
+  <!-- セリフ表示（枠タップで進行） -->
   <div class="message-window" id="message-window">
     <div class="dialogue-content">
       <div class="speaker-name" id="speaker">名前</div>
@@ -188,38 +171,38 @@
   const scenario = {
     start: {
       lines: [
-        { speaker: "ハルト", text: "「……あ、来てくれたんだね。待たせてごめん。」" },
-        { speaker: "ハルト", text: "「今日さ、どうしても君に直接聞いておきたいことがあって……。」" },
-        { speaker: "ハルト", text: "「単刀直入に言うよ。ねぇ……君は僕のこと、どう思ってる？」" }
+        { speaker: "エレナ", text: "「あら、ふふ……お待たせ。今日のあなた、なんだか雰囲気が違って素敵ね。」" },
+        { speaker: "エレナ", text: "「そんなにじっと見つめられたら、私でも少し照れてしまうわ。」" },
+        { speaker: "エレナ", text: "「ねえ……今日の私、あなたの目にはどう映っているかしら？」" }
       ],
       choices: [
-        { text: "「気になる存在かな」と優しく微笑む", next: "like" },
-        { text: "「ただの珍獣だと思ってる」と答える", next: "surreal" },
-        { text: "「実は私もハルトのことが……」と見つめる", next: "love" }
+        { text: "「すごく美しくて見惚れていました」と正直に伝える", next: "beauty" },
+        { text: "「かっこよくてドキドキします」と照れる", next: "cool" },
+        { text: "「エレナさんこそ、いつも素敵です」と微笑む", next: "smile" }
       ]
     },
-    like: {
+    beauty: {
       lines: [
-        { speaker: "ハルト", text: "「気になる存在……か。ふふ、期待してもいいのかな？」" },
-        { speaker: "ハルト", text: "「これからもっと僕のことを知ってほしいな。」" }
-      ],
-      choices: [
-        { text: "最初に戻る", next: "start" }
-      ]
-    },
-    surreal: {
-      lines: [
-        { speaker: "ハルト", text: "「ち、珍獣……！？ 僕、そんなに珍しい生態してるかな……？」" },
-        { speaker: "ハルト", text: "「まあでも、特別視されてるなら……良しとするよ。」" }
+        { speaker: "エレナ", text: "「見惚れてくれたの？……ふふ、最高の褒め言葉ね。」" },
+        { speaker: "エレナ", text: "「今夜はもう少しだけ、あなたの近くにいてもいいかしら？」" }
       ],
       choices: [
         { text: "最初に戻る", next: "start" }
       ]
     },
-    love: {
+    cool: {
       lines: [
-        { speaker: "ハルト", text: "「え……本当……！？ 夢じゃないよね。」" },
-        { speaker: "ハルト", text: "「よかった、勇気を出して聞いて。これからはもっと近くにいてもいい？」" }
+        { speaker: "エレナ", text: "「ドキドキさせてしまったかしら？……かわいい人。」" },
+        { speaker: "エレナ", text: "「でもね、本当は私のほうこそ緊張しているのよ？」" }
+      ],
+      choices: [
+        { text: "最初に戻る", next: "start" }
+      ]
+    },
+    smile: {
+      lines: [
+        { speaker: "エレナ", text: "「まあ、上手な返しね。でもとっても嬉しいわ。」" },
+        { speaker: "エレナ", text: "「ふふ、二人だけの特別な時間にしましょうか。」" }
       ],
       choices: [
         { text: "最初に戻る", next: "start" }
