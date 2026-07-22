@@ -41,7 +41,7 @@
     /* 1. キャラクター表示エリア */
     .character-area {
       position: absolute;
-      top: 20px;
+      top: 10px;
       left: 0;
       width: 100%;
       height: 85%;
@@ -49,7 +49,7 @@
       justify-content: center;
       align-items: flex-end;
       z-index: 1;
-      pointer-events: none; /* キャラクター部分のタップを透過 */
+      pointer-events: none;
     }
 
     .character-svg {
@@ -60,59 +60,54 @@
       transition: all 0.3s ease;
     }
 
-    /* 2. セリフ表示エリア（★高さを完全固定★） */
+    /* 2. セリフ表示エリア（★1画面完結・スクロール絶対なし★） */
     .message-window {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 240px; /* ★ここでサイズを固定★ */
-      background: rgba(18, 15, 25, 0.85); 
+      height: 260px; /* 3つの選択肢が余裕で収まる高さ */
+      background: rgba(18, 15, 25, 0.88); 
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      padding: 18px 20px 15px;
+      padding: 14px 16px 12px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       z-index: 10;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
-      cursor: pointer; /* スマホでタップできることを示す */
+      cursor: pointer;
     }
 
-    /* 上部テキスト情報 */
     .dialogue-content {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
     /* 名前表示 */
     .speaker-name {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: #9dcd5a;
       font-weight: bold;
       letter-spacing: 1px;
-      margin-bottom: 8px;
-      flex-shrink: 0;
+      margin-bottom: 4px;
     }
 
     /* セリフ文章 */
     .text-box {
-      font-size: 0.98rem;
-      line-height: 1.6;
+      font-size: 0.9rem;
+      line-height: 1.45;
       color: #ffffff;
-      flex: 1;
-      overflow-y: auto;
+      min-height: 42px;
     }
 
     /* 右下のタップ送りマーク（∨） */
     .next-arrow {
       align-self: flex-end;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: rgba(255, 255, 255, 0.7);
       animation: bounce 1.2s infinite ease-in-out;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     @keyframes bounce {
@@ -120,24 +115,23 @@
       50% { transform: translateY(4px); }
     }
 
-    /* 選択肢ボタンエリア */
+    /* 選択肢ボタンエリア（スクロール完全排除） */
     .choices-container {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      margin-top: 8px;
-      max-height: 120px;
-      overflow-y: auto; /* 選択肢が多くても固定枠内に収める */
+      margin-top: 6px;
     }
 
     .choice-btn {
       background: rgba(255, 255, 255, 0.12);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.25);
-      padding: 9px 12px;
-      border-radius: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
+      line-height: 1.3;
       text-align: left;
       transition: all 0.2s ease;
     }
@@ -178,7 +172,7 @@
     </svg>
   </div>
 
-  <!-- セリフ表示（枠どこでもタップで次へ） -->
+  <!-- セリフ表示 -->
   <div class="message-window" id="message-window">
     <div class="dialogue-content">
       <div class="speaker-name" id="speaker">名前</div>
@@ -191,13 +185,11 @@
 </div>
 
 <script>
-  // ★複数のセリフが連続するシナリオ構造★
   const scenario = {
     start: {
       lines: [
         { speaker: "ハルト", text: "「……あ、来てくれたんだね。待たせてごめん。」" },
         { speaker: "ハルト", text: "「今日さ、どうしても君に直接聞いておきたいことがあって……。」" },
-        { speaker: "ハルト", text: "「……そんな真剣な目で見つめられると、なんだか緊張して口が滑りそうになるな。」" },
         { speaker: "ハルト", text: "「単刀直入に言うよ。ねぇ……君は僕のこと、どう思ってる？」" }
       ],
       choices: [
@@ -208,8 +200,7 @@
     },
     like: {
       lines: [
-        { speaker: "ハルト", text: "「気になる存在……か。」" },
-        { speaker: "ハルト", text: "「ふふ、それって期待してもいいのかな？」" },
+        { speaker: "ハルト", text: "「気になる存在……か。ふふ、期待してもいいのかな？」" },
         { speaker: "ハルト", text: "「これからもっと僕のことを知ってほしいな。」" }
       ],
       choices: [
@@ -218,8 +209,7 @@
     },
     surreal: {
       lines: [
-        { speaker: "ハルト", text: "「ち、珍獣……！？」" },
-        { speaker: "ハルト", text: "「僕、そんなに珍しい生態してるかな……？」" },
+        { speaker: "ハルト", text: "「ち、珍獣……！？ 僕、そんなに珍しい生態してるかな……？」" },
         { speaker: "ハルト", text: "「まあでも、特別視されてるなら……良しとするよ。」" }
       ],
       choices: [
@@ -228,9 +218,8 @@
     },
     love: {
       lines: [
-        { speaker: "ハルト", text: "「え……本当……！？」" },
-        { speaker: "ハルト", text: "「夢じゃないよね。……よかった、勇気を出して聞いて。」" },
-        { speaker: "ハルト", text: "「これからはもっと近くにいてもいいよね？」" }
+        { speaker: "ハルト", text: "「え……本当……！？ 夢じゃないよね。」" },
+        { speaker: "ハルト", text: "「よかった、勇気を出して聞いて。これからはもっと近くにいてもいい？」" }
       ],
       choices: [
         { text: "最初に戻る", next: "start" }
@@ -247,7 +236,6 @@
   const arrowEl = document.getElementById("arrow");
   const windowEl = document.getElementById("message-window");
 
-  // 画面描画の更新
   function render() {
     const scene = scenario[currentSceneKey];
     const currentLine = scene.lines[currentLineIndex];
@@ -257,7 +245,6 @@
 
     const isLastLine = currentLineIndex === scene.lines.length - 1;
 
-    // セリフが最後かつ選択肢がある場合
     if (isLastLine && scene.choices && scene.choices.length > 0) {
       arrowEl.style.display = "none";
       choicesContainer.style.display = "flex";
@@ -268,7 +255,6 @@
         button.className = "choice-btn";
         button.innerText = choice.text;
         
-        // 選択肢ボタンのタップイベント（枠全体のタップとバブリング防止）
         button.onclick = (e) => {
           e.stopPropagation();
           currentSceneKey = choice.next;
@@ -278,25 +264,21 @@
         choicesContainer.appendChild(button);
       });
     } else {
-      // まだセリフが続く場合
       arrowEl.style.display = "block";
       choicesContainer.style.display = "none";
     }
   }
 
-  // セリフ枠全体をタップした時の挙動
   windowEl.onclick = () => {
     const scene = scenario[currentSceneKey];
     const isLastLine = currentLineIndex === scene.lines.length - 1;
 
-    // まだ続きのセリフがあるなら次のセリフへ進む
     if (!isLastLine) {
       currentLineIndex++;
       render();
     }
   };
 
-  // ゲーム開始
   render();
 </script>
 
