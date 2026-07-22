@@ -65,7 +65,7 @@
       transition: opacity 0.2s ease-in-out;
     }
 
-    /* セリフ表示エリア */
+    /* セリフ表示エリア（通常時） */
     .message-window {
       position: absolute;
       bottom: 0;
@@ -82,6 +82,44 @@
       z-index: 10;
       border-top: 1px solid rgba(244, 143, 177, 0.3);
       cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    /* 特別ストーリー用：枠を消して全画面タップ可能にするスタイル */
+    .phone-screen.special-mode .message-window {
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border-top: none;
+      pointer-events: auto;
+      height: 100%;
+      justify-content: flex-end;
+      padding: 20px 16px 35px 16px;
+    }
+
+    .phone-screen.special-mode .dialogue-content {
+      background: rgba(10, 5, 15, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 213, 79, 0.3);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      margin-bottom: 10px;
+    }
+
+    .phone-screen.special-mode .header-box {
+      margin-bottom: 2px;
+    }
+
+    .phone-screen.special-mode .text-box {
+      font-size: 0.88rem;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    .phone-screen.special-mode .next-arrow {
+      color: rgba(255, 213, 79, 0.9);
+      margin-top: 4px;
     }
 
     .dialogue-content {
@@ -103,6 +141,10 @@
       color: #f48fb1;
       font-weight: bold;
       letter-spacing: 1px;
+    }
+
+    .phone-screen.special-mode .speaker-name {
+      color: #ffd54f;
     }
 
     .header-right {
@@ -229,14 +271,14 @@
 </head>
 <body>
 
-<div class="phone-screen">
+<div class="phone-screen" id="phone-screen">
 
-  <!-- BGM（通常用 & 特別ストーリー用） -->
+  <!-- BGM（通常用 & 甘い特別ストーリー用） -->
   <audio id="bgm" loop preload="auto">
     <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
   </audio>
   <audio id="bgm-special" loop preload="auto">
-    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/16/audio_db32a67e81.mp3" type="audio/mpeg">
   </audio>
 
   <!-- キャラクター画像 -->
@@ -246,8 +288,8 @@
 
   <!-- セリフ枠 -->
   <div class="message-window" id="message-window">
-    <div class="dialogue-content">
-      <div class="header-box">
+    <div class="dialogue-content" id="dialogue-content-box">
+      <div class="header-box" id="header-box">
         <div class="speaker-name" id="speaker"></div>
         <div class="header-right">
           <div class="clear-count" id="clear-count">回収: 0/6</div>
@@ -401,7 +443,7 @@
       ]
     },
 
-    // 6エンド全回収後に解放される特別ストーリー（専用イラスト `special.png`）
+    // 全6エンド回収後に解放される特別ストーリー（専用イラスト `special.png`）
     special_story: {
       isSpecial: true,
       lines: [
@@ -425,6 +467,7 @@
 
   let clearedEnds = JSON.parse(localStorage.getItem("otome_cleared_ends") || "[]");
 
+  const phoneScreenEl = document.getElementById("phone-screen");
   const charImgEl = document.getElementById("char-img");
   const speakerEl = document.getElementById("speaker");
   const endBadgeEl = document.getElementById("end-badge");
@@ -482,6 +525,13 @@
     const scene = scenario[currentSceneKey];
     const currentLine = scene.lines[currentLineIndex];
 
+    // 特別ストーリーの時は枠を消す専用モードクラスを適用
+    if (scene.isSpecial) {
+      phoneScreenEl.classList.add("special-mode");
+    } else {
+      phoneScreenEl.classList.remove("special-mode");
+    }
+
     if (charImgEl.getAttribute("src") !== currentLine.image) {
       charImgEl.src = currentLine.image;
     }
@@ -531,7 +581,7 @@
 
         choicesContainer.appendChild(listContainer);
 
-        // 全6エンド回収済みなら特別ストーリーへのボタンを自動で追加
+        // 正しく全6エンドコンプリートしている場合のみボタンを表示
         if (clearedEnds.length === allEnds.length) {
           const specialBtn = document.createElement("button");
           specialBtn.className = "choice-btn special-choice-btn";
