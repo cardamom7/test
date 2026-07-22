@@ -3,165 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>シュール乙女ゲーム</title>
+  <title>乙女ノベルゲーム</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
       font-family: "Hiragino Sans", "Meiryo", sans-serif;
-      background: linear-gradient(135deg, #ffe6e9 0%, #ffd1dc 100%);
-      color: #4a4a4a;
+      background-color: #0f0f14;
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
-      padding: 15px;
-      box-sizing: border-box;
+      padding: 10px;
     }
-    .game-container {
+
+    /* スマホ縦持ちサイズのフレーム */
+    .phone-screen {
       width: 100%;
-      max-width: 550px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 25px rgba(220, 100, 130, 0.2);
-      border: 3px solid #ffb6c1;
+      max-width: 390px;
+      height: 800px;
+      max-height: 92vh;
+      background: linear-gradient(180deg, #2b1f31 0%, #120e17 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    .status-bar {
+
+    /* 上部：シンプルで洗練されたステータスバー */
+    .header-bar {
+      padding: 16px 20px;
+      background: rgba(0, 0, 0, 0.2);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #fff0f5;
-      padding: 8px 16px;
-      border-radius: 20px;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
-      color: #d87093;
-      font-weight: bold;
+      z-index: 10;
     }
-    .speaker-tag {
-      font-weight: bold;
-      color: #d87093;
-      margin-bottom: 8px;
-      font-size: 1.1rem;
-      border-left: 4px solid #ff69b4;
-      padding-left: 8px;
+    .game-title {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: #dda0dd;
+      text-transform: uppercase;
     }
+    .love-meter {
+      font-size: 0.85rem;
+      color: #ffb6c1;
+      letter-spacing: 1px;
+    }
+
+    /* 中央：キャラクター表示エリア（画面のメイン） */
+    .character-area {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* キャラクター（立ち絵の代わり） */
+    .character-avatar {
+      font-size: 90px;
+      filter: drop-shadow(0 0 20px rgba(255, 182, 193, 0.3));
+      transition: transform 0.3s ease;
+    }
+
+    /* 下部：キャラの後ろが透けるすりガラス風UI */
+    .ui-bottom-area {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 18px;
+      /* 背景をうっすら透けさせる設定 */
+      background: rgba(18, 14, 23, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .speaker-name {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #ffc0cb;
+      letter-spacing: 1px;
+    }
+
     .text-box {
-      background-color: #ffffff;
-      padding: 18px;
-      border-radius: 12px;
-      min-height: 90px;
-      font-size: 1rem;
-      line-height: 1.7;
-      margin-bottom: 20px;
-      border: 2px solid #ffe4e1;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #f0f0f0;
+      min-height: 55px;
     }
+
+    /* 選択肢ボタン */
     .choices-container {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
     .choice-btn {
-      background-color: #fff0f5;
-      color: #c71585;
-      border: 2px solid #ffb6c1;
-      padding: 12px 18px;
-      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 12px 16px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: bold;
-      text-align: center;
-      transition: all 0.2s;
+      font-size: 0.88rem;
+      text-align: left;
+      transition: all 0.2s ease;
     }
     .choice-btn:hover {
-      background-color: #ff69b4;
-      color: #ffffff;
-      border-color: #ff69b4;
-      transform: translateY(-2px);
+      background: rgba(255, 182, 193, 0.25);
+      border-color: #ffb6c1;
+      padding-left: 20px;
     }
   </style>
 </head>
 <body>
 
-<div class="game-container">
-  <div class="status-bar">
-    <span>🌸 攻略対象：神代 蓮（かみしろ れん）</span>
-    <span id="love-meter">好感度: ♡♡♡♡♡</span>
+<div class="phone-screen">
+  <!-- ヘッダー -->
+  <div class="header-bar">
+    <span class="game-title">Love Story</span>
+    <span class="love-meter" id="love-meter">好感度: ♥♡♡♡♡</span>
   </div>
-  <div class="speaker-tag" id="speaker">???</div>
-  <div class="text-box" id="story-text">読み込み中...</div>
-  <div class="choices-container" id="choices"></div>
+
+  <!-- キャラクター表示エリア（背景） -->
+  <div class="character-area">
+    <div class="character-avatar" id="avatar">🤵‍♂️</div>
+  </div>
+
+  <!-- 下部の透けるメッセージ＆選択肢 -->
+  <div class="ui-bottom-area">
+    <div class="speaker-name" id="speaker">イケメン</div>
+    <div class="text-box" id="story-text">読み込み中...</div>
+    <div class="choices-container" id="choices"></div>
+  </div>
 </div>
 
 <script>
-  let lovePoints = 0; // 好感度カウンター
+  let lovePoints = 1;
 
+  // テスト用シナリオ（ここを自由に書き換えてゲームを作ります！）
   const scenario = {
     start: {
-      speaker: "ナレーション",
-      text: "曲がり角で勢いよく何かにぶつかってしまった！食パン……ではなく、なぜか「長ネギ」を口に加えた超絶イケメンが倒れている。",
+      speaker: "皇 凛太郎（すめらぎ りんたろう）",
+      avatar: "🤵‍♂️",
+      text: "「待たせてごめん。……ふふ、そんなに見つめられると照れるな。」",
       choices: [
-        { text: "「大丈夫ですか！？」と手を差し伸べる", next: "hand" },
-        { text: "ネギの産地を尋ねる", next: "negi" },
-        { text: "自分もポケットからアスパラを出す", next: "asparagus" }
+        { text: "「全然待ってないよ」と微笑む", next: "smile", love: 1 },
+        { text: "「遅刻したからジュースおごって」", next: "juice", love: 0 },
+        { text: "黙って鼻毛カッターを差し出す", next: "surreal", love: -1 }
       ]
     },
-    hand: {
-      speaker: "神代 蓮",
-      text: "「フッ……触るな。俺の美しさに触れると、君の細胞が驚いて爆発するぞ。」（※好感度が下がった）",
+    smile: {
+      speaker: "皇 凛太郎",
+      avatar: "🥰",
+      text: "「君はいつも優しいね。……よし、今日は君の行きたい場所へ行こう。」",
       choices: [
-        { text: "「すみませんでした」と謝る", next: "sorry", love: -1 },
-        { text: "「じゃあ爆発してみせます！」と挑む", next: "challenge", love: 1 }
+        { text: "最初からやり直す", next: "start", reset: true }
       ]
     },
-    negi: {
-      speaker: "神代 蓮",
-      text: "「ふっ、目が高いね。これは深谷産だ。君、ネギの味がわかる女だな……気に入った。」（※好感度アップ！）",
+    juice: {
+      speaker: "皇 凛太郎",
+      avatar: "😊",
+      text: "「あはは、現金だなあ。いいよ、あそこの自動販売機で好きなのを選んで？」",
       choices: [
-        { text: "微笑んで「ネギはお薬になりますしね」と言う", next: "next_event", love: 2 },
-        { text: "「実は私、タマネギ派なんです」と伝える", next: "onion", love: -2 }
+        { text: "最初からやり直す", next: "start", reset: true }
       ]
     },
-    asparagus: {
-      speaker: "神代 蓮",
-      text: "「……対抗意識か？嫌いじゃないよ、その威圧感。」（※好感度アップ！）",
+    surreal: {
+      speaker: "皇 凛太郎",
+      avatar: "😳",
+      text: "「えっ……？出てる……！？僕、鼻毛出てた……！？（激しいショックを受けた）」",
       choices: [
-        { text: "そのまま野菜バトルを始める", next: "battle_end", love: 1 }
+        { text: "最初からやり直す", next: "start", reset: true }
       ]
-    },
-
-    // 展開の例
-    sorry: {
-      speaker: "神代 蓮",
-      text: "「素直な子は好きだよ。でもネギはあげないからね。」【普通END】",
-      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
-    },
-    challenge: {
-      speaker: "神代 蓮",
-      text: "「面白い……！君、明日から俺の専属ネギ係になりなよ！」【ネギ係END】",
-      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
-    },
-    next_event: {
-      speaker: "神代 蓮",
-      text: "「ふふ、君といると退屈しないな。今度、僕の自慢のファミレスに連れて行ってあげるよ。」【グッドハッピーEND】",
-      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
-    },
-    onion: {
-      speaker: "ナレーション",
-      text: "激しい宗教的対立により、2人の恋は儚く散った……。【破局END】",
-      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
-    },
-    battle_end: {
-      speaker: "ナレーション",
-      text: "2人は夕日を浴びながら野菜を振り回し、最高のライバルとなった。【青春END】",
-      choices: [{ text: "最初からやり直す", next: "start", reset: true }]
     }
   };
 
   function updateLoveMeter() {
     let hearts = "";
-    const count = Math.max(0, Math.min(5, 3 + lovePoints)); // 0〜5の範囲
+    const count = Math.max(0, Math.min(5, lovePoints));
     for (let i = 0; i < 5; i++) {
       hearts += i < count ? "♥" : "♡";
     }
@@ -172,6 +207,7 @@
     const scene = scenario[sceneKey];
     document.getElementById("speaker").innerText = scene.speaker;
     document.getElementById("story-text").innerText = scene.text;
+    document.getElementById("avatar").innerText = scene.avatar || "🤵‍♂️";
 
     const choicesContainer = document.getElementById("choices");
     choicesContainer.innerHTML = "";
@@ -182,8 +218,8 @@
       button.innerText = choice.text;
       button.onclick = () => {
         if (choice.reset) {
-          lovePoints = 0;
-        } else if (choice.love) {
+          lovePoints = 1;
+        } else if (choice.love !== undefined) {
           lovePoints += choice.love;
         }
         updateLoveMeter();
