@@ -89,7 +89,7 @@
       flex-direction: column;
     }
 
-    /* 名前・エンド表示ヘッダー */
+    /* 名前・エンド表示・BGMボタン用ヘッダー */
     .header-box {
       display: flex;
       justify-content: space-between;
@@ -102,6 +102,23 @@
       color: #f48fb1;
       font-weight: bold;
       letter-spacing: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* BGMボタン */
+    .bgm-btn {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
     /* エンド名バッジ */
@@ -170,6 +187,11 @@
 
 <div class="phone-screen">
 
+  <!-- BGM音声ファイル（フリーJazz音源） -->
+  <audio id="bgm" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+  </audio>
+
   <!-- キャラクター画像 -->
   <div class="character-area">
     <img id="char-img" src="character.png" class="character-img" alt="キャラクター">
@@ -180,7 +202,10 @@
     <div class="dialogue-content">
       <div class="header-box">
         <div class="speaker-name" id="speaker">名前</div>
-        <div class="end-badge" id="end-badge">END</div>
+        <div class="header-right">
+          <button class="bgm-btn" id="bgm-toggle">🎵 ON</button>
+          <div class="end-badge" id="end-badge">END</div>
+        </div>
       </div>
       <div class="text-box" id="story-text">読み込み中...</div>
     </div>
@@ -194,7 +219,6 @@
   const scenario = {
     start: {
       lines: [
-        { speaker: "（地の文）", image: "character.png", text: "仕事終わりの夜。エレナに誘われて、都会の喧騒を見下ろす特別なラウンジへやってきた。" },
         { speaker: "エレナ", image: "character.png", text: "「ふぅ……ようやく静かになったわね。夜風がとても気持ちいいわ。」" },
         { speaker: "エレナ", image: "character.png", text: "「あら、ふふ……お待たせ。そんなにじっと見つめられたら照れてしまうわ。」" },
         { speaker: "エレナ", image: "smile.png", text: "「でも……今日のあなた、なんだか雰囲気が違ってすごく素敵ね。」" },
@@ -310,6 +334,7 @@
 
   let currentSceneKey = "start";
   let currentLineIndex = 0;
+  let bgmStarted = false;
 
   const charImgEl = document.getElementById("char-img");
   const speakerEl = document.getElementById("speaker");
@@ -318,6 +343,23 @@
   const choicesContainer = document.getElementById("choices");
   const arrowEl = document.getElementById("arrow");
   const windowEl = document.getElementById("message-window");
+  const bgmAudio = document.getElementById("bgm");
+  const bgmToggleBtn = document.getElementById("bgm-toggle");
+
+  // BGMの音量調整
+  bgmAudio.volume = 0.25;
+
+  // BGM切り替え機能
+  bgmToggleBtn.onclick = (e) => {
+    e.stopPropagation();
+    if (bgmAudio.paused) {
+      bgmAudio.play();
+      bgmToggleBtn.innerText = "🎵 ON";
+    } else {
+      bgmAudio.pause();
+      bgmToggleBtn.innerText = "🔇 OFF";
+    }
+  };
 
   function render() {
     const scene = scenario[currentSceneKey];
@@ -363,7 +405,13 @@
     }
   }
 
+  // 画面タップでBGMスタート＆セリフ進行
   windowEl.onclick = () => {
+    if (!bgmStarted) {
+      bgmAudio.play().catch(() => {});
+      bgmStarted = true;
+    }
+
     const scene = scenario[currentSceneKey];
     const isLastLine = currentLineIndex === scene.lines.length - 1;
 
